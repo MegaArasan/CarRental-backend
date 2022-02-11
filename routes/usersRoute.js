@@ -45,7 +45,7 @@ router.route("/forgotpassword").post(async (req, res) => {
       }).save();
     }
     // console.log(token);
-    const link = `http://localhost:3000/resetpassword/${user._id}/${token.token}`;
+    const link = `https://kingcars-rental.netlify.app/resetpassword/${user._id}/${token.token}`;
     await sendEmail(user.email, link, user.username);
     res.send("password reset link send to your email account");
   } catch (error) {
