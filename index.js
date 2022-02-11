@@ -20,12 +20,12 @@ app.get("/", (req, res) => {
 });
 app.post("/paymentverification", (req, res) => {
   const SECRET = "12345678";
-  console.log(req.body);
+  // console.log(req.body);
   const crypto = require("crypto");
   var shasum = crypto.createHmac("sha256", SECRET);
   shasum.update(JSON.stringify(req.body));
   const digest = shasum.digest("hex");
-  console.log(digest, req.headers("x-razorpay-signature"));
+  // console.log(digest, req.headers("x-razorpay-signature"));
   if (digest === req.headers("x-razorpay-signature")) {
     console.log("request is legit");
   } else {

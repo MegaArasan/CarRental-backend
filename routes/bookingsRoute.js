@@ -10,7 +10,7 @@ const razorpay = new Razorpay({
 });
 
 router.post("/bookcar", async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   var options = {
     amount: req.body.totalAmount * 100,
     currency: "INR",
@@ -18,7 +18,7 @@ router.post("/bookcar", async (req, res) => {
   };
   try {
     const response = await razorpay.orders.create(options);
-    console.log(response);
+    // console.log(response);
     res.json({
       id: response.id,
       currency: response.currency,
@@ -29,7 +29,7 @@ router.post("/bookcar", async (req, res) => {
       const newbooking = new Booking(req.body);
       await newbooking.save();
       const car = await Car.findOne({ _id: req.body.car });
-      console.log(req.body.car);
+      // console.log(req.body.car);
       car.bookedTimeSlots.push(req.body.bookedTimeSlots);
       await car.save();
       res.send("Your booking is successfull");
