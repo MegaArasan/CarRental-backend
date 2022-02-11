@@ -25,6 +25,7 @@ router.post("/bookcar", async (req, res) => {
       amount: response.amount,
     });
     if (response) {
+      req.body.transactionId = response.razorpay_payment_id;
       const newbooking = new Booking(req.body);
       await newbooking.save();
       const car = await Car.findOne({ _id: req.body.car });
