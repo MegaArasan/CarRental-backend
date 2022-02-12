@@ -18,18 +18,18 @@ app.use("/api/bookings/", require("./routes/bookingsRoute"));
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
-app.post("/paymentverification", (req, res) => {
-  const SECRET = "12345678";
-  // console.log(req.body);
-  const crypto = require("crypto");
-  var shasum = crypto.createHmac("sha256", SECRET);
-  shasum.update(JSON.stringify(req.body));
-  const digest = shasum.digest("hex");
-  // console.log(digest, req.headers("x-razorpay-signature"));
-  if (digest === req.headers("x-razorpay-signature")) {
-    console.log("request is legit");
-  } else {
-  }
-  res.json({ status: "ok" });
-});
+// app.post("/paymentverification", (req, res) => {
+//   const SECRET = "12345678";
+//   // console.log(req.body);
+//   const crypto = require("crypto");
+//   var shasum = crypto.createHmac("sha256", SECRET);
+//   shasum.update(JSON.stringify(req.body));
+//   const digest = shasum.digest("hex");
+//   // console.log(digest, req.headers("x-razorpay-signature"));
+//   if (digest === req.headers("x-razorpay-signature")) {
+//     console.log("request is legit");
+//   } else {
+//   }
+//   res.json({ status: "ok" });
+// });
 app.listen(PORT, () => console.log(`server started in ${PORT}`));
