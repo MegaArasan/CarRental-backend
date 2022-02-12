@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Booking = require("../models/bookingModel");
 const Car = require("../models/carsModel");
+const cors = require("cors");
 const shortid = require("shortid");
 const Razorpay = require("razorpay");
 const razorpay = new Razorpay({
