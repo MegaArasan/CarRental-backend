@@ -21,6 +21,10 @@ router.route("/login").post(async (req, res) => {
 
 router.route("/register").post(async (req, res) => {
   try {
+    const user = await User.findOne({ email: req.body.email });
+    if (user) {
+      return res.status(401).json(error);
+    }
     const newuser = new User(req.body);
     await newuser.save();
     res.send("User registered successfully");
