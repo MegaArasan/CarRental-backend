@@ -3,6 +3,7 @@ const router = express.Router();
 const Booking = require("../models/bookingModel");
 const Car = require("../models/carsModel");
 const cors = require("cors");
+router.use(cors());
 const shortid = require("shortid");
 const Razorpay = require("razorpay");
 const razorpay = new Razorpay({
@@ -20,11 +21,7 @@ router.post("/bookcar", async (req, res) => {
   try {
     const response = await razorpay.orders.create(options);
     // console.log(response);
-    res.json({
-      id: response.id,
-      currency: response.currency,
-      amount: response.amount,
-    });
+
     if (response) {
       req.body.transactionId = response.razorpay_payment_id;
       const newbooking = new Booking(req.body);
@@ -33,7 +30,11 @@ router.post("/bookcar", async (req, res) => {
       // console.log(req.body.car);
       car.bookedTimeSlots.push(req.body.bookedTimeSlots);
       await car.save();
-      res.send("Your booking is successfull");
+      res.json({
+        id: response.id,
+        currency: response.currency,
+        amount: response.amount,
+      });
     } else {
       return res.status(400).json(error);
     }
