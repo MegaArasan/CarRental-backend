@@ -27,7 +27,7 @@ router.route("/register").post(async (req, res) => {
     }
     const newuser = new User(req.body);
     await newuser.save();
-    res.send("User registered successfully");
+    res.send({ msg: "User registered successfully" });
   } catch (error) {
     return res.status(400).json(error);
   }
@@ -38,7 +38,7 @@ router.route("/forgotpassword").post(async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
-      return res.status(400).send("Email is not registered");
+      return res.status(400).send({msg:"Email is not registered"});
     }
     // console.log(user);
     let token = await Token.findOne({ userId: user._id });
