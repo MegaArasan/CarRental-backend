@@ -20,10 +20,10 @@ router.post("/bookcar", async (req, res) => {
   };
   try {
     const response = await razorpay.orders.create(options);
-    // console.log(response);
+    console.log(response);
 
     if (response) {
-      req.body.transactionId = response.razorpay_payment_id;
+      // req.body.transactionId = response.razorpay_payment_id;
       const newbooking = new Booking(req.body);
       await newbooking.save();
       const car = await Car.findOne({ _id: req.body.car });
