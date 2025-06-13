@@ -17,9 +17,9 @@ app.use(cors({
 }));
 dbconnection();
 app.use("/api/users/", require("./routes/user.router"));
+app.use("/api/bookings/", require("./routes/bookingsRoute"));
 app.use(authMiddleware)
 app.use("/api/cars/", require("./routes/carsRoute"));
-app.use("/api/bookings/", require("./routes/bookingsRoute"));
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
