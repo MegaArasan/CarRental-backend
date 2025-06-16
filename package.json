@@ -4,8 +4,8 @@
   "description": "Car Rental App",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "node --prof index.js",
+    "dev": "nodemon  index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Mega Arasan V",
@@ -21,6 +21,7 @@
     "moment": "^2.30.1",
     "mongodb": "^4.3.1",
     "mongoose": "^6.2.1",
+    "node-cron": "^4.1.0",
     "nodemailer": "^6.7.2",
     "nodemon": "^3.1.10",
     "razorpay": "^2.8.0",
