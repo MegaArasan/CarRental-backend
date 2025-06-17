@@ -39,6 +39,6 @@ module.exports = async (email, link, username) => {
             <p>Automatically it redirected you to resetpassword page</p>`,
     });
   } catch (error) {
-    console.log(Error);
+    console.log(error);
   }
 };
