@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {addBooking, getBooking, confirmBooking} = require("../controller/booking.controller");
+const {addBooking, getBooking, confirmBooking} = require("../controllers/booking.controller");
 const auth = require("../middleware/auth.middleware");
 const verifySignature = require("../middleware/verifySignature")
 

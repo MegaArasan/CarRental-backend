@@ -7,7 +7,7 @@ require("dotenv").config();
 const helmet = require("helmet");
 const authMiddleware = require("./middleware/auth.middleware");
 const errorMiddleware = require("./middleware/error.middleware");
-require("./schedulers/booking");
+require("./jobs/booking");
 
 app.use(express.json());
 app.use(helmet())
