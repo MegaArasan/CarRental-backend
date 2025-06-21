@@ -1,3 +1,4 @@
+const logger = require("../config/logger");
 const errorMiddleware = (err, req, res, next) => {
     const error = {...err};
 
@@ -10,7 +11,7 @@ const errorMiddleware = (err, req, res, next) => {
 
     const message = error.message || "Internal Server Error";
     const code = error.code || 500;
-
+    logger.error(`${error.code}- ${error.message} - ${req.originalUrl}`);
     res.status(code).json({
         msg: message
     })

@@ -1,6 +1,6 @@
 const cron = require('node-cron');
 
-const Booking = require('../models/bookingModel');
+const Booking = require('../../src/models/bookingModel');
 
 cron.schedule('*/5 * * * *', async () => {
     const now = new Date();

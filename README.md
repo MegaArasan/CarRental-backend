@@ -115,7 +115,7 @@ app.js              # Entry point
 5. Run Docker (optional):
    ```bash
    docker build -t car-rental-app .
-   docker run -p 3000:3000 car-rental-app
+   docker run -p 8000:8000 car-rental-app
    ```
 
 ---

@@ -1,2 +1,8 @@
 node_modules
 .env
+
+# Ignore logs folder inside src
+/src/logs/
+
+# Ignore all .log files everywhere
+*.log

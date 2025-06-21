@@ -1,5 +1,5 @@
-const Booking = require("../models/bookingModel");
-const Car = require("../models/carsModel");
+const Booking = require("../../src/models/bookingModel");
+const Car = require("../../src/models/carsModel");
 const shortid = require("shortid");
 const Razorpay = require("razorpay");
 const moment = require("moment")

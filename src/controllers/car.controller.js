@@ -1,4 +1,4 @@
-const Car = require("../models/carsModel");
+const Car = require("../../src/models/carsModel");
 
 const getCars = async (req, res, next) => {
     try {
@@ -9,6 +9,6 @@ const getCars = async (req, res, next) => {
     }
 }
 
-module.exports={
+module.exports = {
     getCars
 }

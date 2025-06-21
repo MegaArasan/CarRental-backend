@@ -2,12 +2,13 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const PORT = process.env.PORT || 8000;
-const dbconnection = require("./db");
+const dbconnection = require("./src/config/db");
 require("dotenv").config();
 const helmet = require("helmet");
-const authMiddleware = require("./middleware/auth.middleware");
-const errorMiddleware = require("./middleware/error.middleware");
-require("./jobs/booking");
+const authMiddleware = require("./src/middlewares/auth.middleware");
+const errorMiddleware = require("./src/middlewares/error.middleware");
+const limitter = require("./src/config/rateLimitter");
+require("./src/jobs/booking");
 
 app.use(express.json());
 app.use(helmet())
@@ -16,11 +17,12 @@ app.use(cors({
   methods: ['GET', "POST", "DELETE", 'PUT'],
   credentials: true
 }));
+app.use(limitter);
 dbconnection();
-app.use("/api/users/", require("./routes/user.router"));
-app.use("/api/bookings/", require("./routes/bookingsRoute"));
+app.use("/api/users/", require("./src/routes/user.router"));
+app.use("/api/bookings/", require("./src/routes/bookingsRoute"));
 app.use(authMiddleware)
-app.use("/api/cars/", require("./routes/carsRoute"));
+app.use("/api/cars/", require("./src/routes/carsRoute"));
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

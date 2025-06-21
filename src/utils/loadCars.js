@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Car = require('../models/carsModel');
+const Car = require('../src/models/carsModel');
 require('dotenv/config');
 
 const MONGO_URL = process.env.MONGO_URL;
