@@ -7,10 +7,13 @@ This is a Car Rental Web Application built using **Node.js**, **Express**, **Mon
 ## 🏗️ Architecture Used: MVC Layered with Service Abstraction
 
 ### ✅ Why MVC?
+
 The application follows a **Model-View-Controller (MVC)** layered structure with **service layers** for business logic, ensuring:
+
 - **Separation of concerns** between routes, logic, and data
 
 ### ✅ Folder Structure Overview:
+
 ```
 src/
 ├── models/         # Mongoose schemas
@@ -72,29 +75,31 @@ app.js              # Entry point
 
 ## 🌐 Tech Stack
 
-| Layer        | Technology                |
-|--------------|---------------------------|
-| Backend      | Node.js + Express         |
-| Database     | MongoDB (Mongoose)        |
-| Auth         | JWT + bcrypt              |
-| File Upload  | Multer (S3 Ready)         |
-| Scheduler    | Node-Cron                 |
-| Payment      | Razorpay                  |
-| Deployment   | Docker / Railway / Render |
-| Logging      | Winston                   |
-| Testing      | Jest + Supertest          |
+| Layer       | Technology                |
+| ----------- | ------------------------- |
+| Backend     | Node.js + Express         |
+| Database    | MongoDB (Mongoose)        |
+| Auth        | JWT + bcrypt              |
+| File Upload | Multer (S3 Ready)         |
+| Scheduler   | Node-Cron                 |
+| Payment     | Razorpay                  |
+| Deployment  | Docker / Railway / Render |
+| Logging     | Winston                   |
+| Testing     | Jest + Supertest          |
 
 ---
 
 ## 🐳 Deployment Instructions
 
 1. Clone the repo:
+
    ```bash
    git clone https://github.com/your-username/car-rental-app
    cd car-rental-app
    ```
 
 2. Create `.env`:
+
    ```
    MONGO_URI=
    JWT_SECRET=
@@ -103,11 +108,13 @@ app.js              # Entry point
    ```
 
 3. Install dependencies:
+
    ```bash
    npm install
    ```
 
 4. Start server (dev mode):
+
    ```bash
    npm run dev
    ```
@@ -126,4 +133,5 @@ app.js              # Entry point
 - Rating & Reviews for cars
 - Corporate booking support
 - Email/SMS notifications via queue
+
 ---

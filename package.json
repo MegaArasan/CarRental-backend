@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "Car Rental App",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "start": "node --prof index.js",
     "dev": "nodemon  index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier . --write"
   },
   "author": "Mega Arasan V",
   "license": "ISC",
@@ -31,6 +33,7 @@
     "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "prettier": "^3.5.3"
   }
 }

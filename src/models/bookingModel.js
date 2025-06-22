@@ -1,34 +1,36 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema(
   {
-    car: {type: mongoose.Schema.Types.ObjectID, ref: "cars"},
-    user: {type: mongoose.Schema.Types.ObjectID, ref: "users"},
+    car: { type: mongoose.Schema.Types.ObjectID, ref: 'Car' },
+    user: { type: mongoose.Schema.Types.ObjectID, ref: 'User' },
     bookedTimeSlots: {
-      from: {type: String},
-      to: {type: String},
+      _id: false,
+      from: { type: Date, required: true },
+      to: { type: Date, required: true }
     },
-    totalHours: {type: Number},
-    totalAmount: {type: Number},
-    // transactionId: { type: String },
-    driverRequired: {type: Boolean},
+    totalHours: { type: Number },
+    totalAmount: { type: Number },
+    driverRequired: { type: Boolean, default: false },
 
     // New fields below
     status: {
       type: String,
-      enum: ["pending", "confirmed", "cancelled"],
-      default: "pending",
+      enum: ['pending', 'confirmed', 'cancelled'],
+      default: 'pending'
     },
-    razorpayOrderId: {type: String},
-    razorpayPaymentId: {type: String},
-    paymentVerified: {type: Boolean, default: false},
+    razorpayOrderId: { type: String },
+    razorpayPaymentId: { type: String },
+    paymentVerified: { type: Boolean, default: false },
 
     // Optional: auto-expiry handling
-    expiresAt: {type: Date},
+    expiresAt: { type: Date }
   },
-  {timestamps: true}
+  { timestamps: true }
 );
 
-const bookingModel = mongoose.model("bookings", bookingSchema);
+bookingSchema.index({ car: 1 });
+bookingSchema.index({ user: 1 });
+const bookingModel = mongoose.model('bookings', bookingSchema);
 
 module.exports = bookingModel;

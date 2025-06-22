@@ -1,5 +1,6 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const logger = require('./logger');
 dotenv.config();
 const MONGO_URL = process.env.MONGO_URL;
 
@@ -7,14 +8,15 @@ function connectdb() {
   mongoose.set('strictQuery', true);
   mongoose.connect(MONGO_URL, {
     useUnifiedTopology: true,
-    useNewUrlParser: true,
+    useNewUrlParser: true
   });
   const connection = mongoose.connection;
-  connection.on("connected", () => {
-    console.log("MongoDb is connection successful");
+  connection.on('connected', () => {
+    logger.info('MongoDb is connection successful');
   });
-  connection.on("error", () => {
-    console.log("Mongo DB connection error");
+  connection.on('error', (e) => {
+    logger.error('Mongo DB connection error');
+    logger.error(e);
   });
 }
 

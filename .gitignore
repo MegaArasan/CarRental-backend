@@ -6,3 +6,6 @@ node_modules
 
 # Ignore all .log files everywhere
 *.log
+
+.prettierrc.json
+.prettierignore
