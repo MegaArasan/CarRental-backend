@@ -11,6 +11,11 @@ const limitter = require('./src/config/rateLimitter');
 const { auditLog } = require('./src/middlewares/log.middleware');
 require('./src/jobs/booking');
 
+// Router paths
+const userRouter = require('./src/routes/user.router');
+const bookingRouter = require('./src/routes/bookingsRoute');
+const carRouter = require('./src/routes/carsRoute');
+
 app.use(express.json());
 app.use(helmet());
 app.use(
@@ -24,10 +29,10 @@ app.use(limitter);
 dbconnection();
 app.use(auditLog);
 
-app.use('/api/users/', require('./src/routes/user.router'));
-app.use('/api/bookings/', require('./src/routes/bookingsRoute'));
+app.use('/api/users/', userRouter);
+app.use('/api/bookings/', bookingRouter);
 app.use(authMiddleware);
-app.use('/api/cars/', require('./src/routes/carsRoute'));
+app.use('/api/cars/', carRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
