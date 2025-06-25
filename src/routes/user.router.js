@@ -3,15 +3,17 @@ const router = express.Router();
 const {
   login,
   register,
-  forgetPasseord,
+  forgetPassword,
   resetPassword
 } = require('../../src/controllers/user.controller');
+const { validate } = require('../middlewares/joi.middleware');
+const { loginSchema } = require('../validations/user.schema');
 
-router.post('/login', login);
+router.post('/login', validate(loginSchema), login);
 
 router.post('/register', register);
 
-router.post('/forgotpassword', forgetPasseord);
+router.post('/forgotpassword', forgetPassword);
 
 router.post('/password-reset/:userId/:token', resetPassword);
 

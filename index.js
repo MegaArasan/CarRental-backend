@@ -29,14 +29,14 @@ app.use(limitter);
 dbconnection();
 app.use(auditLog);
 
+app.get('/', (_, res) => {
+  res.send('Hello World!');
+});
+
 app.use('/api/users/', userRouter);
 app.use('/api/bookings/', bookingRouter);
 app.use(authMiddleware);
 app.use('/api/cars/', carRouter);
-
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
 
 app.use((_, res) => {
   res.status(404).json({ msg: 'Route Not Found' });

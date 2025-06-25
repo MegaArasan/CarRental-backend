@@ -6,10 +6,10 @@ const { align, colorize, combine, timestamp, printf } = winston.format;
 const logger = winston.createLogger({
   level: 'info',
   format: combine(
-    colorize({ all: true }),
+    colorize({ all: false }),
     timestamp({ format: 'YYYY-MM-DD hh:mm:ss.SSS A' }),
     align(),
-    printf((info) => `[${info.timestamp}] ${info.level}: ${info.message}`)
+    printf((info) => `[${info.timestamp}] ${info.level}: ${info.message || info.stack}`)
   ),
   defaultMeta: { service: 'user-service' },
   transports: [

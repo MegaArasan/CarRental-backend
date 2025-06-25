@@ -61,7 +61,7 @@ const register = async (req, res, next) => {
   }
 };
 
-const forgetPasseord = async (req, res, next) => {
+const forgetPassword = async (req, res, next) => {
   const { email } = req.body;
   try {
     if (!email) {
@@ -127,6 +127,6 @@ const resetPassword = async (req, res, next) => {
 module.exports = {
   login,
   register,
-  forgetPasseord,
+  forgetPassword,
   resetPassword
 };
