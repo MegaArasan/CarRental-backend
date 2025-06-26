@@ -15,9 +15,11 @@ require('./src/jobs/booking');
 const userRouter = require('./src/routes/user.router');
 const bookingRouter = require('./src/routes/bookingsRoute');
 const carRouter = require('./src/routes/carsRoute');
+const cookieParser = require('cookie-parser');
 
 app.use(express.json());
 app.use(helmet());
+app.use(cookieParser());
 app.use(
   cors({
     origin: ['http://localhost:3000'],

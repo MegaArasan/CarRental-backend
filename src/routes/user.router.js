@@ -7,11 +7,11 @@ const {
   resetPassword
 } = require('../../src/controllers/user.controller');
 const { validate } = require('../middlewares/joi.middleware');
-const { loginSchema } = require('../validations/user.schema');
+const { loginSchema, registerSchema } = require('../validations/user.schema');
 
 router.post('/login', validate(loginSchema), login);
 
-router.post('/register', register);
+router.post('/register', validate(registerSchema), register);
 
 router.post('/forgotpassword', forgetPassword);
 

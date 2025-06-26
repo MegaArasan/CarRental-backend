@@ -7,33 +7,61 @@ const sendEmail = require('../utils/sendEmail');
 const { createToken } = require('../utils/jwt');
 const bcrypt = require('bcryptjs');
 
+/**
+ * Authenticates a user with email and password.
+ *
+ * @async
+ * @function login
+ * @param {import('express').Request} req - Express request object containing user credentials in the body.
+ * @param {import('express').Response} res - Express response object used to send the response.
+ * @param {import('express').NextFunction} next - Express next middleware function.
+ * @returns {Promise<void>} Responds with user data and JWT token if authentication is successful, otherwise sends an error message.
+ */
 const login = async (req, res, next) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ msg: 'User is not registered' });
+      return res.status(400).json({ success: false, message: 'User is not registered' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(400).json({ msg: 'Invalid credentials' });
+      return res.status(400).json({ success: false, message: 'Invalid credentials' });
     }
 
     const token = await createToken({
+      userId: user._id,
       username: user.username,
       email: user.email,
-      phoneno: user.phoneno
+      phoneno: user.phoneno,
+      role: user.role
     });
-    const { password: _, ...userData } = user._doc;
 
-    res.status(200).json({ user: userData, token });
+    res.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: true,
+      sameSite: 'strict'
+    });
+
+    res.status(200).json({ success: true, message: 'Login successfully' });
   } catch (e) {
     next(e);
   }
 };
 
+/**
+ * Registers a new user with the provided details.
+ *
+ * @async
+ * @function register
+ * @param {import('express').Request} req - Express request object containing user registration details in the body.
+ * @param {import('express').Response} res - Express response object used to send the response.
+ * @param {import('express').NextFunction} next - Express next middleware function.
+ * @returns {Promise<void>} Responds with a success message and sets a JWT cookie if registration is successful, otherwise sends an error message.
+ */
 const register = async (req, res, next) => {
   const { email, password, address, phoneno, username } = req.body;
   try {
@@ -55,7 +83,21 @@ const register = async (req, res, next) => {
       username
     });
     await newuser.save();
-    res.status(200).json({ msg: 'User registered successfully' });
+    const token = await createToken({
+      userId: newuser._id,
+      username,
+      email,
+      phoneno,
+      role: 'customer'
+    });
+    res.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: true,
+      sameSite: 'strict'
+    });
+
+    res.status(201).json({ success: true, message: 'User registered successfully' });
   } catch (error) {
     next(error);
   }
@@ -66,13 +108,14 @@ const forgetPassword = async (req, res, next) => {
   try {
     if (!email) {
       return res.status(400).json({
-        msg: 'Email is required'
+        success: false,
+        message: 'Email is required'
       });
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).send({ msg: 'Email is not registered' });
+      return res.status(400).send({ success: false, message: 'Email is not registered' });
     }
 
     //    Delete old tokens
@@ -88,7 +131,9 @@ const forgetPassword = async (req, res, next) => {
 
     const link = `https://kingcars-rental.netlify.app/resetpassword/${user._id}/${resetToken}`;
     await sendEmail(user.email, link, user.username);
-    res.status(200).json({ msg: 'password reset link send to your email account' });
+    res
+      .status(200)
+      .json({ success: true, message: 'password reset link send to your email account' });
   } catch (error) {
     next(error);
   }
@@ -98,12 +143,14 @@ const resetPassword = async (req, res, next) => {
   const { password } = req.body;
   try {
     if (!password || password.length < 6) {
-      return res.status(400).json({ msg: 'Password must be at least 6 characters' });
+      return res
+        .status(400)
+        .json({ success: false, message: 'Password must be at least 6 characters' });
     }
 
     const user = await User.findById(req.params.userId);
     if (!user) {
-      return res.status(400).json({ msg: 'Invalid link or expired' });
+      return res.status(400).json({ success: false, message: 'Invalid link or expired' });
     }
 
     const token = await Token.findOne({
@@ -111,14 +158,14 @@ const resetPassword = async (req, res, next) => {
       token: req.params.token
     });
     if (!token) {
-      return res.status(400).send('Invalid link or expired');
+      return res.status(400).json({ success: false, message: 'Invalid link or expired' });
     }
 
     user.password = await bcrypt.hash(req.body.password, 10);
     await user.save();
     await token.deleteOne();
 
-    res.status(200).json({ msg: 'Password reset successfully' });
+    res.status(200).json({ success: true, message: 'Password reset successfully' });
   } catch (error) {
     next(error);
   }

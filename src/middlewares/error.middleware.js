@@ -13,7 +13,8 @@ const errorMiddleware = (err, req, res, next) => {
   const code = error.code || 500;
   logger.error(`${error.code}- ${error.message}`);
   res.status(code).json({
-    msg: message
+    success: false,
+    message
   });
 };
 
