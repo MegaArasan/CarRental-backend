@@ -14,6 +14,7 @@ const userRouter = require('./src/routes/user.router');
 const bookingRouter = require('./src/routes/bookingsRoute');
 const carRouter = require('./src/routes/carsRoute');
 const cookieParser = require('cookie-parser');
+const verifyCsrf = require('./src/middlewares/verifyCsrf');
 
 const PORT = process.env.PORT || 8000;
 const app = express();
@@ -30,6 +31,7 @@ app.use(
 app.use(limitter);
 dbconnection();
 app.use(auditLog);
+app.use(verifyCsrf);
 
 app.get('/', (_, res) => {
   res.send('Hello World!');

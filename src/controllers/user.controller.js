@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const sendEmail = require('../utils/sendEmail');
 const { createToken } = require('../utils/jwt');
 const bcrypt = require('bcryptjs');
-const { createCsrfToken } = require('../utils/helper');
+const { createCsrfToken, hashToken } = require('../utils/helper');
 
 /**
  * Authenticates a user with email and password.
@@ -48,7 +48,8 @@ const login = async (req, res, next) => {
     });
 
     const csrfToken = createCsrfToken();
-    res.cookie('csrf_token', csrfToken, {
+    const hashedCsrfToken = hashToken(csrfToken);
+    res.cookie('csrf_token', hashedCsrfToken, {
       httpOnly: false, // Frontend needs access
       secure: true,
       sameSite: 'strict',
@@ -105,8 +106,10 @@ const register = async (req, res, next) => {
       secure: true,
       sameSite: 'strict'
     });
+
     const csrfToken = createCsrfToken();
-    res.cookie('csrf_token', csrfToken, {
+    const hashedCsrfToken = hashToken(csrfToken);
+    res.cookie('csrf_token', hashedCsrfToken, {
       httpOnly: false, // Frontend needs access
       secure: true,
       sameSite: 'strict',
