@@ -1,7 +1,5 @@
 const express = require('express');
-const app = express();
 const cors = require('cors');
-const PORT = process.env.PORT || 8000;
 const dbconnection = require('./src/config/db');
 require('dotenv').config();
 const helmet = require('helmet');
@@ -17,9 +15,11 @@ const bookingRouter = require('./src/routes/bookingsRoute');
 const carRouter = require('./src/routes/carsRoute');
 const cookieParser = require('cookie-parser');
 
-app.use(express.json());
+const PORT = process.env.PORT || 8000;
+const app = express();
 app.use(helmet());
 app.use(cookieParser());
+app.use(express.json());
 app.use(
   cors({
     origin: ['http://localhost:3000'],
