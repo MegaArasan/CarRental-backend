@@ -37,7 +37,7 @@ app.get('/', (_, res) => {
   res.send('Hello World!');
 });
 
-app.use('/api/users/', userRouter);
+app.use('/api/user/', userRouter);
 app.use('/api/bookings/', bookingRouter);
 app.use(authMiddleware);
 app.use('/api/cars/', carRouter);
