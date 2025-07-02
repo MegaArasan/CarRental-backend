@@ -6,11 +6,12 @@ const {
   confirmBooking
 } = require('../../src/controllers/booking.controller');
 const auth = require('../middlewares/auth.middleware');
+const csrf = require('../middlewares/verifyCsrf');
 const verifySignature = require('../middlewares/verifySignature');
 
-router.post('/bookcar', auth, addBooking);
+router.post('/bookcar', auth, csrf, addBooking);
 
-router.get('/getallbookings', auth, getBooking);
+router.get('/getallbookings', auth, csrf, getBooking);
 
 router.post('/verify', verifySignature, confirmBooking);
 

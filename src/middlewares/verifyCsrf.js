@@ -1,7 +1,7 @@
 const { hashToken } = require('../utils/helper');
 
 const verifyCsrf = (req, res, next) => {
-  const csrfTokenServer = req.cookies['csrf-token'];
+  const csrfTokenServer = req.cookies?.csrf_token;
   const csrfTokenClient = req.headers['x-csrf-token'];
 
   if (!csrfTokenClient || !csrfTokenServer) {
