@@ -1,12 +1,10 @@
-const express = require('express');
-const router = express.Router();
 const User = require('../../src/models/userModel');
 const Token = require('../../src/models/token');
-const jwt = require('jsonwebtoken');
 const sendEmail = require('../utils/sendEmail');
 const { createToken } = require('../utils/jwt');
 const bcrypt = require('bcryptjs');
 const { createCsrfToken, hashToken } = require('../utils/helper');
+const { authenticatedUser } = require('../services/user.service');
 
 /**
  * Authenticates a user with email and password.
@@ -21,24 +19,7 @@ const { createCsrfToken, hashToken } = require('../utils/helper');
 const login = async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ success: false, message: 'User is not registered' });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.status(400).json({ success: false, message: 'Invalid credentials' });
-    }
-
-    const token = await createToken({
-      userId: user._id,
-      username: user.username,
-      email: user.email,
-      phoneno: user.phoneno,
-      role: user.role
-    });
+    const { token, hashedCsrfToken } = await authenticatedUser(email, password);
 
     res.cookie('token', token, {
       httpOnly: true,
@@ -47,8 +28,6 @@ const login = async (req, res, next) => {
       sameSite: 'strict'
     });
 
-    const csrfToken = createCsrfToken();
-    const hashedCsrfToken = hashToken(csrfToken);
     res.cookie('csrf_token', hashedCsrfToken, {
       httpOnly: false, // Frontend needs access
       secure: true,
