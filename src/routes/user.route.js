@@ -6,7 +6,7 @@ const {
   forgetPassword,
   resetPassword,
   logout
-} = require('../../src/controllers/user.controller');
+} = require('../controllers/user.controller');
 const { validate } = require('../middlewares/joi.middleware');
 const { loginSchema, registerSchema } = require('../validations/user.schema');
 

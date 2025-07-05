@@ -1,4 +1,4 @@
-const { Schema } = require('mongoose');
+const { Schema, model } = require('mongoose');
 
 const FileAttachmentSchema = new Schema(
   {
@@ -13,7 +13,13 @@ const FileAttachmentSchema = new Schema(
     s3Bucket: { type: String },
     gridFsFileId: { type: Schema.Types.ObjectId },
     relatedModel: { type: String, required: true, enum: ['User', 'Car', 'Booking'], index: true },
-    relatedId: { type: Schema.Types.ObjectId, required: true, refPath: 'relatedModel', index: true }
+    relatedId: {
+      type: Schema.Types.ObjectId,
+      required: false,
+      refPath: 'relatedModel',
+      index: true
+    },
+    isLinked: { type: Boolean, default: false, index: true }
   },
   {
     timestamps: true
@@ -22,4 +28,4 @@ const FileAttachmentSchema = new Schema(
 
 FileAttachmentSchema.index({ relatedModel: 1, relatedId: 1 });
 
-module.exports = mongoose.model('FileAttachment', FileAttachmentSchema);
+module.exports = model('FileAttachment', FileAttachmentSchema);

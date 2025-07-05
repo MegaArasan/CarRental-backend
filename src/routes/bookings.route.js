@@ -1,10 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {
-  addBooking,
-  getBooking,
-  confirmBooking
-} = require('../../src/controllers/booking.controller');
+const { addBooking, getBooking, confirmBooking } = require('../controllers/booking.controller');
 const auth = require('../middlewares/auth.middleware');
 const csrf = require('../middlewares/verifyCsrf');
 const verifySignature = require('../middlewares/verifySignature');
