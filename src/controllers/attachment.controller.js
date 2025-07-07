@@ -1,4 +1,4 @@
-const { handleFileUpload } = require('../services/attachment.service');
+const { handleFileUpload, getFile } = require('../services/attachment.service');
 
 const add = async (req, res, next) => {
   try {
@@ -16,4 +16,17 @@ const add = async (req, res, next) => {
   }
 };
 
-module.exports = { add };
+const get = async (req, res, next) => {
+  const { id } = req.query;
+  try {
+    const { attachment, downloadStream } = await getFile(id);
+
+    res.setHeader('Content-Type', attachment.fileType);
+    res.setHeader('Content-Disposition', `inline:filename="${attachment.fileName}"`);
+    downloadStream.pipe(res);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { add, get };

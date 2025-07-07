@@ -1,6 +1,6 @@
 const ErrorResponse = require('../errors/errorResponse');
 const FileAttachment = require('../models/attachmentModel');
-const { uploadFile } = require('./filestorage.service');
+const { uploadFile, downloadFile } = require('./filestorage.service');
 
 const handleFileUpload = async (files, data, user) => {
   const attachments = [];
@@ -29,6 +29,22 @@ const handleFileUpload = async (files, data, user) => {
   }
 };
 
+const getFile = async (fileId) => {
+  try {
+    const attachment = await FileAttachment.findById(fileId);
+
+    if (!attachment) {
+      throw new ErrorResponse(404, 'File not found');
+    }
+
+    const downloadStream = downloadFile(attachment.gridFsFileId);
+    return { attachment, downloadStream };
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
-  handleFileUpload
+  handleFileUpload,
+  getFile
 };

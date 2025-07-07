@@ -1,4 +1,5 @@
 const Car = require('../../src/models/carsModel');
+const { addCar } = require('../services/car.service');
 
 const getCars = async (req, res, next) => {
   try {
@@ -9,6 +10,18 @@ const getCars = async (req, res, next) => {
   }
 };
 
+const add = async (req, res, next) => {
+  const data = req.body;
+  try {
+    const result = await addCar(data);
+
+    return res.status(201).json({ success: true, message: result });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
-  getCars
+  getCars,
+  add
 };

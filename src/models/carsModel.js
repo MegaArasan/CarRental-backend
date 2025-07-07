@@ -7,7 +7,7 @@ const carSchema = new mongoose.Schema(
     variant: { type: String, required: true },
     transmission: { type: String, required: true, enum: ['Manual', 'Automatic'] },
     segment: { type: String, required: true, enum: ['Hatchback', 'Sedan', 'SUV', 'Luxury', 'MUV'] },
-    image: { type: String, required: true },
+    image: { type: mongoose.Schema.Types.ObjectId, ref: 'FileAttachment', required: true },
     capacity: { type: Number, required: true, min: 2, max: 10 },
     fuelType: { type: String, required: true, enum: ['Petrol', 'Diesel', 'Electric', 'Hybrid'] },
     rentPerHour: { type: Number, required: true, min: 50 },
