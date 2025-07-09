@@ -1,9 +1,10 @@
 const Car = require('../../src/models/carsModel');
-const { addCar } = require('../services/car.service');
+const { addCar, getAll } = require('../services/car.service');
 
 const getCars = async (req, res, next) => {
   try {
-    const cars = await Car.find();
+    const { page, limit, manufacturer, segment } = req.query;
+    const cars = await getAll(manufacturer, segment, page, limit);
     res.status(200).json({ success: true, data: cars });
   } catch (e) {
     next(e);

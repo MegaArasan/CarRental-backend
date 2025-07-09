@@ -1,5 +1,27 @@
 const Car = require('../models/carsModel');
 
+const getAll = async (manufacturer, segment, page = 1, limit = 10) => {
+  try {
+    const filter = {};
+
+    if (manufacturer) {
+      filter.manufacturer = manufacturer;
+    }
+
+    if (segment) {
+      filter.segment = segment;
+    }
+
+    const skip = (page - 1) * limit;
+
+    const result = await Car.find(filter).skip(skip).limit(limit).exec();
+
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const addCar = async (data) => {
   try {
     const newCar = {
@@ -14,9 +36,9 @@ const addCar = async (data) => {
       rentPerHour: data.rentPerHour,
       status: 'active',
       location: {
-        city: '',
-        state: '',
-        country: ''
+        city: data.location.city,
+        state: data.location.state,
+        country: data.location.country
       }
     };
 
@@ -28,4 +50,4 @@ const addCar = async (data) => {
   }
 };
 
-module.exports = { addCar };
+module.exports = { addCar, getAll };

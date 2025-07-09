@@ -21,3 +21,47 @@ module.exports = {
     }
   ]
 };
+// module.exports = {
+//   apps: [
+//     {
+//       name: 'Car-rental-8000',
+//       script: './index.js',
+//       env: {
+//         PORT: 8000
+//       },
+//       instances: 4,
+//       exec_mode: 'cluster',
+//       watch: true
+//     },
+//     {
+//       name: 'Car-rental-8001',
+//       script: './index.js',
+//       env: {
+//         PORT: 8001
+//       },
+//       instances: 4,
+//       exec_mode: 'cluster',
+//       watch: true
+//     },
+//     {
+//       name: 'Car-rental-8002',
+//       script: './index.js',
+//       env: {
+//         PORT: 8002
+//       },
+//       instances: 4,
+//       exec_mode: 'cluster',
+//       watch: true
+//     },
+//     {
+//       name: 'Car-rental-8003',
+//       script: './index.js',
+//       env: {
+//         PORT: 8003
+//       },
+//       instances: 4,
+//       exec_mode: 'cluster',
+//       watch: true
+//     }
+//   ]
+// };
