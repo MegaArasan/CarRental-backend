@@ -4,7 +4,7 @@ const bookingSchema = new mongoose.Schema(
   {
     car: { type: mongoose.Schema.Types.ObjectID, ref: 'Car' },
     user: { type: mongoose.Schema.Types.ObjectID, ref: 'User' },
-    bookedTimeSlots: {
+    slot: {
       _id: false,
       from: { type: Date, required: true },
       to: { type: Date, required: true }
@@ -31,6 +31,9 @@ const bookingSchema = new mongoose.Schema(
 
 bookingSchema.index({ car: 1 });
 bookingSchema.index({ user: 1 });
+bookingSchema.index({ 'slot.from': 1, 'slot.to': 1 });
+bookingSchema.index({ car: 1, 'slot.from': 1, 'slot.to': 1 }, { name: 'car_slot_check' });
+
 const bookingModel = mongoose.model('bookings', bookingSchema);
 
 module.exports = bookingModel;

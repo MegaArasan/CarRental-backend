@@ -12,6 +12,7 @@ const FileAttachmentSchema = new Schema(
     s3Key: { type: String },
     s3Bucket: { type: String },
     gridFsFileId: { type: Schema.Types.ObjectId },
+    thumbnailFileId: { type: Schema.Types.ObjectId },
     relatedModel: { type: String, required: true, enum: ['User', 'Car', 'Booking'], index: true },
     relatedId: {
       type: Schema.Types.ObjectId,

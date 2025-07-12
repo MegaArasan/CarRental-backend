@@ -7,7 +7,7 @@ const handleFileUpload = async (files, data, user) => {
   const uploadedFiles = Object.values(files).flat();
   try {
     for (const file of uploadedFiles) {
-      const { id: gridFsFileId } = await uploadFile(file);
+      const { originalFileId: gridFsFileId, thumbnailFileId } = await uploadFile(file);
 
       const attachment = await FileAttachment.create({
         fileName: file.originalname,
@@ -17,6 +17,7 @@ const handleFileUpload = async (files, data, user) => {
         uploadedBy: user.userId,
         storageType: 'GRIDFS',
         gridFsFileId,
+        thumbnailFileId,
         relatedModel: data.type, // You can customize this later from req.body if needed
         relatedId: null, // relatedId is set to null initially. Later, link it via update when associating with User/Car/Booking.
         isLinked: false

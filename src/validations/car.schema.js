@@ -27,6 +27,7 @@ const addCar = Joi.object({
   transmission: Joi.string().valid('Manual', 'Automatic').required(),
   segment: Joi.string().valid('Hatchback', 'Sedan', 'SUV', 'Luxury', 'MUV').required(),
   image: Joi.string().required(),
+  thumbnail: Joi.string().required(),
   capacity: Joi.number().min(2).max(10).required(),
   fuelType: Joi.string().valid('Petrol', 'Diesel', 'Electric', 'Hybrid').required(),
   rentPerHour: Joi.number().min(50).required(),
