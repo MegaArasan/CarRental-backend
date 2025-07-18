@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const getCar = Joi.object({
+const getCarSchema = Joi.object({
   page: Joi.number().min(1).default(1).messages({
     'number.base': 'Page must be a number',
     'number.min': 'Page must be at least 1'
@@ -20,7 +20,7 @@ const getCar = Joi.object({
     .trim()
 });
 
-const addCar = Joi.object({
+const addCarSchema = Joi.object({
   manufacturer: Joi.string().required(),
   model: Joi.string().required(),
   variant: Joi.string().required(),
@@ -39,4 +39,23 @@ const addCar = Joi.object({
   }).required()
 });
 
-module.exports = { addCar, getCar };
+const editCarSchema = Joi.object({
+  manufacturer: Joi.string(),
+  model: Joi.string(),
+  variant: Joi.string(),
+  transmission: Joi.string().valid('Manual', 'Automatic'),
+  segment: Joi.string().valid('Hatchback', 'Sedan', 'SUV', 'Luxury', 'MUV'),
+  image: Joi.string(),
+  thumbnail: Joi.string(),
+  capacity: Joi.number().min(2).max(10),
+  fuelType: Joi.string().valid('Petrol', 'Diesel', 'Electric', 'Hybrid'),
+  rentPerHour: Joi.number().min(50),
+  status: Joi.string().valid('active', 'inactive'),
+  location: Joi.object({
+    city: Joi.string(),
+    state: Joi.string(),
+    country: Joi.string()
+  })
+}).min(1); // Require at least one field to update
+
+module.exports = { addCarSchema, getCarSchema, editCarSchema };

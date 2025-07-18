@@ -1,11 +1,12 @@
 const express = require('express');
-const { getCars, add } = require('../controllers/car.controller');
+const { getCars, add, editCar } = require('../controllers/car.controller');
 const cachedMiddleware = require('../middlewares/redis.middleware');
 const { validate, validateQuery } = require('../middlewares/joi.middleware');
-const { addCar, getCar } = require('../validations/car.schema');
+const { addCarSchema, getCarSchema, editCarSchema } = require('../validations/car.schema');
 const router = express.Router();
 
-router.get('/', validateQuery(getCar), cachedMiddleware, getCars);
-router.post('/add', validate(addCar), add);
+router.get('/', validateQuery(getCarSchema), cachedMiddleware, getCars);
+router.post('/add', validate(addCarSchema), add);
+router.put('/edit/:id', validate(editCarSchema), editCar);
 
 module.exports = router;

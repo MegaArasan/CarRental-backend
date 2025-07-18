@@ -8,18 +8,24 @@ const getAll = async (filter, page = 1, limit = 10) => {
     const result = await Car.find(filter)
       .skip(skip)
       .limit(limit)
-      .populate({
-        path: 'image',
-        select: 'thumbnail'
-      })
+      // .populate({
+      //   path: 'image',
+      //   select: 'thumbnail'
+      // })
       .lean();
     const baseUrl = process.env.BASE_URL;
 
     const transformed = result.map((car) => {
-      let thumbId = car.image?.thumbnail;
+      let thumbId = car.thumbnail;
+      let image = '';
+      if (thumbId) {
+        image = `${baseUrl}/api/v1/image/${car.thumbnail}`;
+      } else {
+        image = car.image;
+      }
       return {
         ...car,
-        image: thumbId ? `${baseUrl}/api/v1/image/${car.image.thumbnail}` : null
+        image
       };
     });
 
@@ -79,4 +85,50 @@ const addCar = async (data) => {
   }
 };
 
-module.exports = { addCar, getAll, getCount };
+const edit = async (id, data) => {
+  try {
+    const updatedCar = {
+      manufacturer: data.manufacturer,
+      model: data.model,
+      variant: data.variant,
+      transmission: data.transmission,
+      segment: data.segment,
+      image: data.image,
+      thumbnail: data.thumbnail,
+      capacity: data.capacity,
+      fuelType: data.fuelType,
+      rentPerHour: data.rentPerHour,
+      status: data.status || 'active',
+      location: {
+        city: data.location?.city,
+        state: data.location?.state,
+        country: data.location?.country
+      }
+    };
+
+    const result = await Car.findByIdAndUpdate(id, updatedCar, {
+      new: true,
+      runValidators: true
+    });
+
+    // Optional: only update FileAttachment if image is GridFS
+    if (data.image && data.thumbnail) {
+      await FileAttachment.updateOne(
+        { gridFsFileId: data.image, thumbnailFileId: data.thumbnail },
+        {
+          $set: {
+            relatedModel: 'Car',
+            relatedId: result._id,
+            isLinked: true
+          }
+        }
+      );
+    }
+
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { addCar, getAll, getCount, edit };
