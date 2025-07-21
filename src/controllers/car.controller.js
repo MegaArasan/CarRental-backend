@@ -1,9 +1,17 @@
 const Car = require('../../src/models/carsModel');
-const { addCar, getAll, getCount, edit } = require('../services/car.service');
+const { addCar, getAll, getCount, edit, getOne } = require('../services/car.service');
 
 const getCars = async (req, res, next) => {
   try {
-    const { page, limit, manufacturer, segment } = req.query;
+    const { page, limit, manufacturer, segment, id } = req.query;
+    if (id) {
+      const data = await getOne(id);
+
+      return res.status(200).json({
+        success: true,
+        data
+      });
+    }
     const filter = {};
     if (manufacturer) {
       filter.manufacturer = manufacturer;

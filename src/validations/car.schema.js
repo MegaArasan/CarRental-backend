@@ -1,6 +1,7 @@
 const Joi = require('joi');
 
 const getCarSchema = Joi.object({
+  id: Joi.string(),
   page: Joi.number().min(1).default(1).messages({
     'number.base': 'Page must be a number',
     'number.min': 'Page must be at least 1'

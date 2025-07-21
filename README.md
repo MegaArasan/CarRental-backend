@@ -1,137 +1,141 @@
-# Car Rental Application – Node.js + Express + MongoDB
+# 🚗 Car Rental Backend API
 
-This is a Car Rental Web Application built using **Node.js**, **Express**, **MongoDB**, and follows the **MVC layered architecture** with clean service separation.
+A full-featured Node.js backend for a car rental platform. Supports image uploads via GridFS, secure cookie-based sessions (JWT + CSRF), dynamic filtering, role-based access, and optimized MongoDB queries.
 
----
-
-## 🏗️ Architecture Used: MVC Layered with Service Abstraction
-
-### ✅ Why MVC?
-
-The application follows a **Model-View-Controller (MVC)** layered structure with **service layers** for business logic, ensuring:
-
-- **Separation of concerns** between routes, logic, and data
-
-### ✅ Folder Structure Overview:
+## 📁 Project Structure
 
 ```
-src/
-├── models/         # Mongoose schemas
-├── controllers/    # Route handlers (no logic)
-├── services/       # Business logic (availability, pricing, etc.)
-├── routes/         # Express route definitions
-├── middlewares/    # Auth, validation, error handlers
-├── config/         # Database and env configuration
-├── jobs/           # Cron jobs (e.g., cancel unpaid bookings)
-├── utils/          # Helper functions (e.g., date validation)
-├── uploads/        # Temporary local files (dev only)
-├── logs/           # Winston-based log files
-app.js              # Entry point
-.env                # Environment config
+├── controllers/
+├── models/
+├── routes/
+├── services/
+├── middlewares/
+├── utils/
+├── uploads/ (GridFS files managed in MongoDB)
+├── config/
+├── validations/
+├── .env
+├── server.js
 ```
 
 ---
 
-## ⚙️ Core Features
+## 🚀 Features
 
-- 🔐 **JWT Authentication**
-- 👤 User + Admin roles
-- 🚗 Car listing, search, filter
-- 📅 Car availability logic
-- 🧮 Dynamic pricing based on days
-- 🛒 Booking system (with conflict checks)
-- 💳 Razorpay integration
-- 📆 Auto-cancel unpaid bookings (via `node-cron`)
-- 🖼️ Image upload (S3-ready)
-- 📊 Admin dashboard routes
-- 🧪 Unit-tested architecture (Jest-ready)
+- 🔐 **Secure Auth:** JWT-based login with CSRF protection via cookies.
+- 🧠 **Role Access:** Middleware support for admin/user authorization.
+- ☁️ **GridFS Uploads:** File + thumbnail handling with linking to models.
+- 🔍 **Pagination & Filters:** Dynamic filters for car listings.
+- 🛠️ **Validation:** Joi-based schema validation.
+- 📸 **Image API:** Serve images via `/api/v1/image/:id`.
 
 ---
 
-## 🔐 Security Best Practices Followed
+## ⚙️ Setup Instructions
 
-- Bcrypt for password hashing
-- JWT for secure token-based authentication
-- Helmet + CORS + Rate-limiting
-- Input validation using `joi`
-- Centralized error handling
-- Environment variables using `.env`
+### 1. Clone the repo
 
----
+```bash
+git clone https://github.com/your-username/car-rental-api.git
+cd car-rental-api
+```
 
-## 💳 Booking & Payment Flow
+### 2. Install dependencies
 
-1. User selects a car and rental dates
-2. System checks car availability (prevents double-booking)
-3. Calculates total amount
-4. Creates a **pending** booking
-5. User pays via payment gateway
-6. On payment success:
-   - Booking marked as **paid**
-   - Car marked unavailable for those dates
-7. If unpaid after X minutes → booking auto-cancelled via `node-cron`
+```bash
+npm install
+```
 
----
+### 3. Configure `.env`
 
-## 🌐 Tech Stack
+```env
+PORT=8000
+MONGO_URI=mongodb://localhost:27017/car-rental
+JWT_SECRET=your_jwt_secret
+BASE_URL=http://localhost:8000
+NODE_ENV=development
+```
 
-| Layer       | Technology                |
-| ----------- | ------------------------- |
-| Backend     | Node.js + Express         |
-| Database    | MongoDB (Mongoose)        |
-| Auth        | JWT + bcrypt              |
-| File Upload | Multer (S3 Ready)         |
-| Scheduler   | Node-Cron                 |
-| Payment     | Razorpay                  |
-| Deployment  | Docker / Railway / Render |
-| Logging     | Winston                   |
-| Testing     | Jest + Supertest          |
+### 4. Start the server
+
+```bash
+# Dev
+npm run dev
+
+# Prod
+npm start
+```
 
 ---
 
-## 🐳 Deployment Instructions
+## 🛡️ Security
 
-1. Clone the repo:
-
-   ```bash
-   git clone https://github.com/your-username/car-rental-app
-   cd car-rental-app
-   ```
-
-2. Create `.env`:
-
-   ```
-   MONGO_URI=
-   JWT_SECRET=
-   RAZORPAY_KEY_ID=
-   RAZORPAY_SECRET=
-   ```
-
-3. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-4. Start server (dev mode):
-
-   ```bash
-   npm run dev
-   ```
-
-5. Run Docker (optional):
-   ```bash
-   docker build -t car-rental-app .
-   docker run -p 8000:8000 car-rental-app
-   ```
+- JWT token in **httpOnly** cookie.
+- CSRF token exposed via `csrf_token` cookie for frontend use.
+- Helmet for HTTP headers.
+- Rate limiter on auth endpoints (optional).
 
 ---
 
-## ✅ Coming Soon
+## 🧰 Technologies Used
 
-- Admin UI Dashboard (React)
-- Rating & Reviews for cars
-- Corporate booking support
-- Email/SMS notifications via queue
+- **Node.js + Express**
+- **MongoDB + Mongoose**
+- **GridFS for file storage**
+- **Joi** for request validation
+- **JWT + CSRF** for auth
+- **Multer** for file uploads
+- **PM2** + **node-cron** for process & task management
+
+---
+
+## 📦 Sample `.env`
+
+```env
+# MongoDB connection string
+MONGO_URL=mongodb://localhost:27017/car-rental
+
+# Server port
+PORT=8000
+
+# JWT configuration
+secret_key=yourSuperSecretKey
+JWT_EXPIRES_IN=7d
+
+# Admin email credentials (used for nodemailer or login)
+MY_GMAIL=admin@example.com
+CLIENT_ID=your_google_oauth_client_id
+CLIENT_SECRET=your_google_oauth_client_secret
+REFRESH_TOKEN=your_google_oauth_refresh_token
+
+# Razorpay credentials (for payment integration)
+RAZOR_KEY=your_razorpay_key
+RAZOR_SECRET=your_razorpay_secret
+
+# Admin login credentials
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASS=adminPassword123
+
+# Base URL for server (used in emails, uploads, etc.)
+BASE_URL=http://localhost:8000
+```
+
+---
+
+## 🙋‍♂️ Admin Actions
+
+- Add/edit cars
+- Link uploaded images to cars
+- Set car status as active/inactive
+
+---
+
+## ✨ To-Do / Enhancements
+
+- ✅ Booking module
+- ✅ Payment gateway integration
+- 🚧 Email notifications (bookings, status)
+- 🚧 Mobile app backend support
+- 🚧 Multi-user login (vendor vs customer)
 
 ---

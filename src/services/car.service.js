@@ -35,6 +35,29 @@ const getAll = async (filter, page = 1, limit = 10) => {
   }
 };
 
+const getOne = async (id) => {
+  try {
+    const result = await Car.findById(id);
+
+    const baseUrl = process.env.BASE_URL;
+    console.log(result);
+
+    let thumbId = result.thumbnail;
+    let image = '';
+    if (thumbId) {
+      image = `${baseUrl}/api/v1/image/${result.thumbnail}`;
+    } else {
+      image = result.image;
+    }
+    return {
+      ...result._doc,
+      image
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
 const getCount = async (filter) => {
   try {
     const count = await Car.countDocuments(filter);
@@ -131,4 +154,4 @@ const edit = async (id, data) => {
   }
 };
 
-module.exports = { addCar, getAll, getCount, edit };
+module.exports = { addCar, getAll, getCount, edit, getOne };
