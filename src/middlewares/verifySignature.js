@@ -5,7 +5,6 @@ const verifySignature = (req, res, next) => {
   const shasum = crypto.createHmac('sha256', secret);
   shasum.update(JSON.stringify(req.body));
   const digest = shasum.digest('hex');
-  console.log(req.headers);
   if (digest === req.headers['x-razorpay-signature']) {
     next();
   } else {

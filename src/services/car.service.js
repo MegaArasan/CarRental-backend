@@ -38,14 +38,12 @@ const getAll = async (filter, page = 1, limit = 10) => {
 const getOne = async (id) => {
   try {
     const result = await Car.findById(id);
-
     const baseUrl = process.env.BASE_URL;
-    console.log(result);
 
-    let thumbId = result.thumbnail;
+    let imageId = result.image;
     let image = '';
-    if (thumbId) {
-      image = `${baseUrl}/api/v1/image/${result.thumbnail}`;
+    if (imageId) {
+      image = `${baseUrl}/api/v1/image/${result.image}`;
     } else {
       image = result.image;
     }

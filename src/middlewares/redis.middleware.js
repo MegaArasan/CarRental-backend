@@ -46,15 +46,18 @@ const cachedMiddleware = async (req, res, next) => {
       cached: true
     });
   }
-
   res.sendResponse = res.json;
   res.json = async (body) => {
-    try {
-      await redisClient.del(key);
-      await redisClient.setEx(key, 60, JSON.stringify(body));
-    } catch (e) {
-      logger.error('Redis SET error:', e);
+    if (res.statusCode === 200) {
+      try {
+        const payload = typeof body.toJSON === 'function' ? body.toJSON() : body;
+        await redisClient.del(key);
+        await redisClient.setEx(key, 60, JSON.stringify(payload));
+      } catch (e) {
+        logger.error('Redis SET error:', e);
+      }
     }
+
     res.sendResponse(body);
   };
 

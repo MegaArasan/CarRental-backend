@@ -16,6 +16,7 @@ const bookingRouter = require('./src/routes/bookings.route');
 const carRouter = require('./src/routes/cars.route');
 const attachmentRouter = require('./src/routes/attachment.route');
 const csrfRouter = require('./src/routes/csrf.route');
+const imageViewRouter = require('./src/routes/image.route');
 
 const cookieParser = require('cookie-parser');
 
@@ -40,7 +41,7 @@ app.get('/', (_, res) => {
 });
 
 app.use('/api/v1/user', userRouter);
-
+app.use('/api/v1/image', imageViewRouter);
 app.use('/api/v1/bookings', bookingRouter);
 app.use(authMiddleware);
 app.use('/api/v1/csrf', csrfRouter);
@@ -54,4 +55,4 @@ app.use((req, res) => {
 app.use(errorMiddleware);
 app.listen(PORT, () => console.log(`server started in ${PORT}`));
 
-//  TODO: Need to build a public image url and need to change the load car seed file and need to do the redis caching fix for the failed response is caching
+// TODO : Need to check the boddking controller and route and need to check the seed file

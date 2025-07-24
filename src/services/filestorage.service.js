@@ -46,7 +46,7 @@ const uploadFile = (file) =>
     }
   });
 
-const downloadFile = (fileId) => {
+const downloadFile = async (fileId) => {
   if (!ObjectId.isValid(fileId)) {
     throw new ErrorResponse(400, 'Invalid file id');
   }

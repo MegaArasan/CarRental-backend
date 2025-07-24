@@ -6,7 +6,6 @@ const validate = (schema) => {
       return next();
     } else {
       const { details } = error;
-      console.log(details);
       const message = details.map((i) => i.message).join(',');
       res.locals.message = message;
       return res.status(422).json({ msg: message });

@@ -78,7 +78,6 @@ const getBooking = async (req, res, next) => {
 const confirmBooking = async (req, res) => {
   const { payload, event } = req.body;
   try {
-    console.log(payload);
     if (event === 'payment.captured') {
       const paymentId = payload.payment.entity.id;
       const orderId = payload.payment.entity.order_id;

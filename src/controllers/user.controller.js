@@ -55,12 +55,12 @@ const register = async (req, res, next) => {
   const { email, password, address, phoneno, username } = req.body;
   try {
     if (!email || !password || !address || !phoneno || !username) {
-      return res.status(400).json({ msg: 'All fields are required' });
+      return res.status(400).json({ success: false, message: 'All fields are required' });
     }
 
     const user = await User.findOne({ email });
     if (user) {
-      return res.status(401).send({ msg: 'Email already Registered' });
+      return res.status(401).json({ success: false, message: 'Email already Registered' });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -103,6 +103,7 @@ const register = async (req, res, next) => {
 
 const forgetPassword = async (req, res, next) => {
   const { email } = req.body;
+  const BASE_URL = process.env.BASE_URL;
   try {
     if (!email) {
       return res.status(400).json({
@@ -113,21 +114,22 @@ const forgetPassword = async (req, res, next) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).send({ success: false, message: 'Email is not registered' });
+      return res.status(401).json({ success: false, message: 'Email is not registered' });
     }
 
     //    Delete old tokens
     await Token.deleteMany({ userId: user._id });
 
     //    Create a new token with expiry
-    const resetToken = await createToken({ id: user._id }, '1h');
+    const resetToken = await crypto.randomBytes(32).toString('hex');
+    const hashedToken = await hashToken(resetToken);
     await new Token({
       userId: user._id,
-      token: resetToken,
+      token: hashedToken,
       createdAt: new Date()
     }).save();
 
-    const link = `https://kingcars-rental.netlify.app/resetpassword/${user._id}/${resetToken}`;
+    const link = `${BASE_URL}/resetpassword/${user._id}/${resetToken}`;
     await sendEmail(user.email, link, user.username);
     res
       .status(200)
@@ -150,13 +152,18 @@ const resetPassword = async (req, res, next) => {
     if (!user) {
       return res.status(400).json({ success: false, message: 'Invalid link or expired' });
     }
-
+    const hashedFromURL = await hashToken(req.params.token);
     const token = await Token.findOne({
       userId: user._id,
-      token: req.params.token
+      token: hashedFromURL
     });
     if (!token) {
       return res.status(400).json({ success: false, message: 'Invalid link or expired' });
+    }
+
+    if (token.createdAt.getTime() + 3600000 < Date.now()) {
+      await token.deleteOne();
+      return res.status(400).json({ success: false, message: 'Token expired' });
     }
 
     user.password = await bcrypt.hash(req.body.password, 10);

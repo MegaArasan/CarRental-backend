@@ -50,7 +50,6 @@ const add = async (req, res, next) => {
 };
 
 const editCar = async (req, res, next) => {
-  const data = req.body;
   try {
     const { id } = req.params;
     const data = req.body;

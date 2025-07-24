@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const logger = require('../config/logger');
 const ErrorResponse = require('../errors/errorResponse');
 
@@ -14,6 +15,21 @@ const errorMiddleware = (err, req, res, next) => {
   } else if (err.code && String(err.code).length <= 3) {
     statusCode = 500;
     message = err.message;
+  } else if (err instanceof mongoose.Error.CastError) {
+    statusCode = 400;
+    message = `Invalid ${err.path}: ${err.value}`;
+  } else if (err.code === 11000) {
+    statusCode = 409;
+    const field = Object.keys(err.keyPattern || {})[0];
+    message = `Duplicate value for field: ${field}`;
+  } else if (err instanceof mongoose.Error.ValidationError) {
+    statusCode = 422;
+    message = Object.values(err.errors)
+      .map((e) => e.message)
+      .join(',');
+  } else if (err.name === 'MongoServerSelectionError') {
+    statusCode = 503;
+    message = 'Unable to connect to MongoDB server. Please try again later.';
   } else if (err.message) {
     message = err.message;
   }
