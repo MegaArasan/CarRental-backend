@@ -55,4 +55,4 @@ app.use((req, res) => {
 app.use(errorMiddleware);
 app.listen(PORT, () => console.log(`server started in ${PORT}`));
 
-// TODO : Need to check the boddking controller and route and need to check the seed file
+// TODO : Need to check the bookking controller and route

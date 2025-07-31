@@ -3,22 +3,21 @@ const { ObjectId } = require('mongodb');
 const sharp = require('sharp');
 const ErrorResponse = require('../errors/errorResponse');
 
-const uploadFile = (file) =>
+const uploadFile = (file, providedBucket) =>
   new Promise(async (resolve, reject) => {
     try {
-      const bucket = getBucket();
+      const bucket = providedBucket || getBucket();
 
       const originalUpload = bucket.openUploadStream(file.originalname, {
         contentType: file.mimetype
       });
-      originalUpload.end(file.buffer);
 
       const thumbBuffer = await sharp(file.buffer).resize({ width: 300 }).jpeg().toBuffer();
 
       const thumbUpload = bucket.openUploadStream(`thumb-${file.originalname}`, {
         contentType: 'image/jpeg'
       });
-      thumbUpload.end(thumbBuffer);
+
       let originalFileId, thumbnailFileId;
 
       const check = () => {
@@ -41,6 +40,9 @@ const uploadFile = (file) =>
 
       originalUpload.on('error', reject);
       thumbUpload.on('error', reject);
+
+      originalUpload.end(file.buffer);
+      thumbUpload.end(thumbBuffer);
     } catch (err) {
       reject(new ErrorResponse(500, 'File upload failed'));
     }
