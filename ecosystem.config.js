@@ -4,8 +4,9 @@ module.exports = {
       name: 'Car-rental',
       script: './index.js',
       instances: 1,
-      exec_mode: 'cluster',
+      exec_mode: 'fork',
       watch: true,
+      ignore_watch: ['node_modules', './src/logs'],
       env: {
         NODE_ENV: 'development',
         PORT: 8000
