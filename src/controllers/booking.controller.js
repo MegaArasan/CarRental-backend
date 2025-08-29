@@ -1,77 +1,37 @@
 const Booking = require('../../src/models/bookingModel');
 const Car = require('../../src/models/carsModel');
-const shortid = require('shortid');
-const Razorpay = require('razorpay');
-const moment = require('moment');
 const logger = require('../config/logger');
-
-const razorpay = new Razorpay({
-  key_id: process.env.RAZOR_KEY,
-  key_secret: process.env.RAZOR_SECRET
-});
+const { addBookingService, getBookingService } = require('../services/booking.service');
 
 const addBooking = async (req, res, next) => {
-  const options = {
-    amount: req.body.totalAmount * 100,
-    currency: 'INR',
-    receipt: shortid.generate()
-  };
   try {
-    //        Check the car exist
-    const car = await Car.findOne({ _id: req.body.car });
-
-    if (!car) {
-      return res.status(404).json({ msg: 'Car not found' });
-    }
-
-    //        Check for booking time slots
-    const bookedslots = car.bookedTimeSlots || [];
-    const newbookingslot = req.body.bookedTimeSlots;
-    const newFrom = moment(newbookingslot.from, 'MMM DD YYYY');
-    const newTo = moment(newbookingslot.to, 'MMM DD YYYY');
-
-    for (const slot of bookedslots) {
-      const existFrom = moment(slot.from, 'MMM DD YYYY');
-      const existTo = moment(slot.to, 'MMM DD YYYY');
-
-      let alreadyBooked = newFrom.isBefore(existTo) && newTo.isAfter(existFrom);
-      if (alreadyBooked) {
-        return res.status(400).json({ msg: 'Car is already booked in the selected time range' });
-      }
-    }
-
-    // create payment
-    const response = await razorpay.orders.create(options);
-
-    if (!response) {
-      return res.status(500).json({ msg: 'Payment order creation failed' });
-    }
-
-    //Save the booking
-    const newbooking = new Booking({
-      ...req.body,
-      razorpayOrderId: response.id,
-      status: 'pending',
-      expiresAt: moment().add(10, 'minutes').toDate()
-    });
-    await newbooking.save();
-
+    const result = await addBookingService(req.body);
     res.status(200).json({
-      id: response.id,
-      currency: response.currency,
-      amount: response.amount
+      success: true,
+      data: result
     });
   } catch (error) {
-    next(error.message);
+    next(error);
   }
 };
 
 const getBooking = async (req, res, next) => {
   try {
-    const bookings = await Booking.find().populate('car');
-    res.status(200).json(bookings);
+    const { status, from, to } = req.query;
+    const user = req.user;
+    const filter = {};
+    if (status) filter.status = status;
+
+    if (from) filter.from = new Date(from);
+    if (to) filter.to = new Date(to);
+
+    const result = await getBookingService(user, filter);
+    res.status(200).json({
+      success: true,
+      data: result
+    });
   } catch (error) {
-    next(error.message);
+    next(error);
   }
 };
 

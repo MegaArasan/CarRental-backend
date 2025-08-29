@@ -33,6 +33,7 @@ bookingSchema.index({ car: 1 });
 bookingSchema.index({ user: 1 });
 bookingSchema.index({ 'slot.from': 1, 'slot.to': 1 });
 bookingSchema.index({ car: 1, 'slot.from': 1, 'slot.to': 1 }, { name: 'car_slot_check' });
+bookingSchema.index({ status: 1 });
 
 const bookingModel = mongoose.model('bookings', bookingSchema);
 

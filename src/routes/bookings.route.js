@@ -4,10 +4,12 @@ const { addBooking, getBooking, confirmBooking } = require('../controllers/booki
 const auth = require('../middlewares/auth.middleware');
 const csrf = require('../middlewares/verifyCsrf');
 const verifySignature = require('../middlewares/verifySignature');
+const { validate, validateQuery } = require('../middlewares/joi.middleware');
+const { bookingSchema, getBookingQuerySchema } = require('../validations/booking.schema');
 
-router.post('/bookcar', auth, csrf, addBooking);
+router.post('/bookcar', auth, csrf, validate(bookingSchema), addBooking);
 
-router.get('/getallbookings', auth, csrf, getBooking);
+router.get('/getallbookings', auth, csrf, validateQuery(getBookingQuerySchema), getBooking);
 
 router.post('/verify', verifySignature, confirmBooking);
 

@@ -1,5 +1,7 @@
 const Car = require('../models/carsModel');
 const FileAttachment = require('../models/attachmentModel');
+const Booking = require('../models/bookingModel');
+const ErrorResponse = require('../errors/errorResponse');
 
 const getAll = async (filter, page = 1, limit = 10) => {
   try {
@@ -38,6 +40,9 @@ const getAll = async (filter, page = 1, limit = 10) => {
 const getOne = async (id) => {
   try {
     const result = await Car.findById(id);
+    if (!result) {
+      throw new ErrorResponse(404, 'Car Not found for the given ID');
+    }
     const baseUrl = process.env.BASE_URL;
 
     let imageId = result.image;
@@ -47,6 +52,9 @@ const getOne = async (id) => {
     } else {
       image = result.image;
     }
+
+    const booking = await Booking.find({ car: result._id });
+    console.log(booking);
     return {
       ...result._doc,
       image
