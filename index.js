@@ -58,3 +58,11 @@ app.use((req, res) => {
 
 app.use(errorMiddleware);
 app.listen(PORT, () => console.log(`server started in ${PORT}`));
+
+// TODO :
+// 1. Edit Profile including profile picture
+// 2. payment History. (need payment table)
+// 3. Top deals and Offers
+// 4. pickup and drop
+// 5. Explore API
+// 6. Admin Dashboard

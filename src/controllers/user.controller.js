@@ -5,6 +5,7 @@ const { createToken } = require('../utils/jwt');
 const bcrypt = require('bcryptjs');
 const { createCsrfToken, hashToken } = require('../utils/helper');
 const { authenticatedUser } = require('../services/user.service');
+const userModel = require('../../src/models/userModel');
 
 /**
  * Authenticates a user with email and password.
@@ -196,10 +197,30 @@ const logout = async (req, res, next) => {
   }
 };
 
+const getUser = async (req, res, next) => {
+  try {
+    const result = await userModel.findOne({ id: req.user.id });
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        message: 'User Not Found'
+      });
+    }
+    delete result['password'];
+    return res.status(200).json({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   login,
   register,
   forgetPassword,
   resetPassword,
-  logout
+  logout,
+  getUser
 };

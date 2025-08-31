@@ -5,10 +5,12 @@ const {
   register,
   forgetPassword,
   resetPassword,
-  logout
+  logout,
+  getUser
 } = require('../controllers/user.controller');
 const { validate } = require('../middlewares/joi.middleware');
 const { loginSchema, registerSchema } = require('../validations/user.schema');
+const auth = require('../middlewares/auth.middleware');
 
 router.post('/login', validate(loginSchema), login);
 
@@ -19,5 +21,7 @@ router.post('/forgotpassword', forgetPassword);
 router.post('/password-reset/:userId/:token', resetPassword);
 
 router.post('/logout', logout);
+
+router.get('/profile', auth, getUser);
 
 module.exports = router;
