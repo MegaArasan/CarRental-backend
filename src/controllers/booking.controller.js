@@ -45,8 +45,12 @@ const confirmBooking = async (req, res) => {
       const booking = await Booking.findOne({ razorpayOrderId: orderId });
 
       if (!booking) {
-        return res.status(200).json({ msg: 'Booking not found for the car' });
+        return res.status(200).json({ success: false, message: 'Booking not found for the car' });
       }
+
+      // if (booking.paymentVerified) {
+      //   return res.status(200).json({ msg: 'Booking already confirmed' });
+      // }
 
       booking.status = 'confirmed';
       booking.razorpayPaymentId = paymentId;
@@ -56,13 +60,21 @@ const confirmBooking = async (req, res) => {
       const car = await Car.findById(booking.car);
       car.bookedTimeSlots.push(booking.bookedTimeSlots);
       await car.save();
+      // Optional: Prevent double booking
+      // const conflict = car.bookedTimeSlots.some(
+      //   (slot) => slot.from < booking.bookedTimeSlots.to && slot.to > booking.bookedTimeSlots.from
+      // );
+      // if (!conflict) {
+      //   car.bookedTimeSlots.push(booking.bookedTimeSlots);
+      //   await car.save();
+      // }
 
-      return res.status(200).json({ msg: 'Booking confirmed successfully' });
+      return res.status(200).json({ success: true, message: 'Booking confirmed successfully' });
     }
-    res.status(200).json({ msg: 'Event ignored' });
+    res.status(200).json({ success: true, message: 'Event ignored' });
   } catch (e) {
     logger.error(e || e.message);
-    res.status(500).json({ msg: 'Internal server error' });
+    res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
 

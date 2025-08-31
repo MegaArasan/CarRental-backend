@@ -1,5 +1,8 @@
 const Joi = require('joi');
 
+// Simple ISO + YYYY-MM-DD regex
+const isoOrDateRegex = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z)?$/;
+
 const bookingSchema = Joi.object({
   user: Joi.object({
     _id: Joi.string().required(),
@@ -36,11 +39,11 @@ const bookingSchema = Joi.object({
 const getBookingQuerySchema = Joi.object({
   status: Joi.string().valid('pending', 'confirmed', 'cancelled').optional(),
 
-  from: Joi.date().optional().messages({
-    'date.format': '"from" must be a valid ISO date'
+  from: Joi.string().pattern(isoOrDateRegex).optional().messages({
+    'date.format': '"from" must be in YYYY-MM-DD format'
   }),
 
-  to: Joi.date().optional().messages({
+  to: Joi.string().pattern(isoOrDateRegex).optional().messages({
     'date.format': '"to" must be a valid ISO date'
   })
 })

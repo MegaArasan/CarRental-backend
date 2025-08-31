@@ -53,10 +53,11 @@ const getOne = async (id) => {
       image = result.image;
     }
 
-    const booking = await Booking.find({ car: result._id });
-    console.log(booking);
+    const bookings = await Booking.find({ car: result._id }).lean();
+
     return {
       ...result._doc,
+      bookings,
       image
     };
   } catch (error) {

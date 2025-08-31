@@ -96,16 +96,16 @@ const getBookingService = async (user, filter = {}) => {
   if (filter.from || filter.to) {
     const slotFilter = {};
     if (filter.from && filter.to) {
-      slotFilter.$or = [{ 'slot.from': { $lte: filter.to }, 'slot.to': { $gte: filter.from } }];
+      slotFilter.$or = [{ 'slot.from': { $lte: filter.from }, 'slot.to': { $gte: filter.to } }];
     } else if (filter.from) {
-      slotFilter['slot.to'] = { $gte: filter.from };
+      slotFilter['slot.from'] = { $gte: filter.from };
     } else if (filter.to) {
-      slotFilter['slot.from'] = { $lte: filter.to };
+      slotFilter['slot.to'] = { $lte: filter.to };
     }
 
     Object.assign(query, slotFilter);
   }
-
+  console.log(query);
   const bookings = await Booking.find(query).populate('car');
   return bookings;
 };
