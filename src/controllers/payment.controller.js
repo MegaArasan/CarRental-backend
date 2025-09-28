@@ -1,3 +1,5 @@
+const { getPaymentHistory } = require('../services/payment.service');
+
 const paymentHistory = async (req, res, next) => {
   try {
     const {
@@ -35,3 +37,5 @@ const paymentHistory = async (req, res, next) => {
     next(error);
   }
 };
+
+module.exports = { paymentHistory };
