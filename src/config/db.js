@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const logger = require('./logger');
 const { GridFSBucket } = require('mongodb');
+const ErrorResponse = require('../errors/errorResponse');
 dotenv.config();
 const MONGO_URL = process.env.MONGO_URL;
 let bucket;
@@ -26,6 +27,7 @@ function connectdb() {
   connection.on('error', (e) => {
     logger.error('Mongo DB connection error');
     logger.error(e);
+    throw new ErrorResponse(500, e);
   });
 }
 

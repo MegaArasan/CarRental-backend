@@ -1,3 +1,4 @@
+const { ref } = require('joi');
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema(
@@ -27,6 +28,10 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true
+    },
+    profile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'FileAttachment'
     }
   },
   { timestamps: true }

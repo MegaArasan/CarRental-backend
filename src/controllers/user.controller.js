@@ -4,7 +4,7 @@ const sendEmail = require('../utils/sendEmail');
 const { createToken } = require('../utils/jwt');
 const bcrypt = require('bcryptjs');
 const { createCsrfToken, hashToken } = require('../utils/helper');
-const { authenticatedUser } = require('../services/user.service');
+const { authenticatedUser, updateUser, getUserDtl } = require('../services/user.service');
 const userModel = require('../../src/models/userModel');
 
 /**
@@ -55,10 +55,6 @@ const login = async (req, res, next) => {
 const register = async (req, res, next) => {
   const { email, password, address, phoneno, username } = req.body;
   try {
-    if (!email || !password || !address || !phoneno || !username) {
-      return res.status(400).json({ success: false, message: 'All fields are required' });
-    }
-
     const user = await User.findOne({ email });
     if (user) {
       return res.status(401).json({ success: false, message: 'Email already Registered' });
@@ -199,17 +195,36 @@ const logout = async (req, res, next) => {
 
 const getUser = async (req, res, next) => {
   try {
-    const result = await userModel.findOne({ id: req.user.id });
-    if (!result) {
-      return res.status(404).json({
-        success: false,
-        message: 'User Not Found'
-      });
-    }
-    delete result['password'];
+    const result = await getUserDtl(req.user.id);
+
     return res.status(200).json({
       success: true,
       data: result
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const editUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ success: false, message: 'Id is Mandatory' });
+    }
+
+    const user = await getUserDtl(id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User Not Found' });
+    }
+
+    const data = req.body;
+
+    await updateUser(id, data);
+
+    return res.status(200).json({
+      success: true,
+      data: 'Profile updated successfully'
     });
   } catch (error) {
     next(error);
@@ -222,5 +237,6 @@ module.exports = {
   forgetPassword,
   resetPassword,
   logout,
-  getUser
+  getUser,
+  editUser
 };

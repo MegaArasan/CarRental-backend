@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema(
   {
-    car: { type: mongoose.Schema.Types.ObjectID, ref: 'Car' },
-    user: { type: mongoose.Schema.Types.ObjectID, ref: 'User' },
+    car: { type: mongoose.Schema.Types.ObjectId, ref: 'Car' },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     slot: {
       _id: false,
       from: { type: Date, required: true },

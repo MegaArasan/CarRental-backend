@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const { createCsrfToken, hashToken } = require('../utils/helper');
 const User = require('../../src/models/userModel');
 const ErrorResponse = require('../errors/errorResponse');
+const FileAttachment = require('../models/attachmentModel');
 
 const authenticatedUser = async (email, password) => {
   try {
@@ -34,4 +35,47 @@ const authenticatedUser = async (email, password) => {
   }
 };
 
-module.exports = { authenticatedUser };
+const updateUser = async (id, data) => {
+  try {
+    const user = await User.findOne({ id });
+    if (!user) throw new ErrorResponse(404, 'User Not Found');
+
+    await User.updateOne({ id }, { $set: { ...data } });
+
+    if (data.profile) {
+      await FileAttachment.updateOne(
+        { gridFsFileId: data.profile },
+        {
+          $set: {
+            relatedModel: 'User',
+            relatedId: id,
+            isLinked: true
+          }
+        }
+      );
+    }
+
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getUserDtl = async (id) => {
+  try {
+    const result = await User.findOne({ id });
+    if (!result) {
+      throw new ErrorResponse(404, 'User Not Found');
+    }
+
+    // Remove sensitive fields
+    const userObj = result.toObject(); // convert Mongoose doc to plain object
+    delete userObj.password;
+
+    return userObj;
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { authenticatedUser, updateUser, getUserDtl };
