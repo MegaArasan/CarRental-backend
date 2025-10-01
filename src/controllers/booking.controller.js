@@ -2,10 +2,11 @@ const Booking = require('../../src/models/bookingModel');
 const Car = require('../../src/models/carsModel');
 const logger = require('../config/logger');
 const { addBookingService, getBookingService } = require('../services/booking.service');
+const { updatePaymentHistory } = require('../services/payment.service');
 
 const addBooking = async (req, res, next) => {
   try {
-    const result = await addBookingService(req.body);
+    const result = await addBookingService(req.body, req.user);
     res.status(200).json({
       success: true,
       data: result
@@ -20,10 +21,16 @@ const getBooking = async (req, res, next) => {
     const { status, from, to } = req.query;
     const user = req.user;
     const filter = {};
-    if (status) filter.status = status;
+    if (status) {
+      filter.status = status;
+    }
 
-    if (from) filter.from = new Date(from);
-    if (to) filter.to = new Date(to);
+    if (from) {
+      filter.from = new Date(from);
+    }
+    if (to) {
+      filter.to = new Date(to);
+    }
 
     const result = await getBookingService(user, filter);
     res.status(200).json({
@@ -68,6 +75,15 @@ const confirmBooking = async (req, res) => {
       //   car.bookedTimeSlots.push(booking.bookedTimeSlots);
       //   await car.save();
       // }
+
+      // Update PaymentHistory
+      await updatePaymentHistory(orderId, {
+        status: 'completed',
+        paymentMode: '',
+        gatewayResponse: JSON.stringify(req.body),
+        transactionId: paymentId,
+        amount: payload.payment.entity.amount
+      });
 
       return res.status(200).json({ success: true, message: 'Booking confirmed successfully' });
     }

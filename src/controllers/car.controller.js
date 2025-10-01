@@ -1,4 +1,3 @@
-const Car = require('../../src/models/carsModel');
 const { addCar, getAll, getCount, edit, getOne } = require('../services/car.service');
 
 const getCars = async (req, res, next) => {
@@ -23,8 +22,8 @@ const getCars = async (req, res, next) => {
     const cars = await getAll(filter, page, limit);
     const count = await getCount(filter, page, limit);
 
-    let limitNum = limit || 10;
-    let totalPages = Math.ceil(count / limitNum);
+    const limitNum = limit || 10;
+    const totalPages = Math.ceil(count / limitNum);
     res.status(200).json({
       success: true,
       data: {

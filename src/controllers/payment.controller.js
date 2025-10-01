@@ -21,11 +21,21 @@ const paymentHistory = async (req, res, next) => {
     }
 
     const filter = {};
-    if (status) filter.status = status;
-    if (paymentMode) filter.paymentMode = paymentMode;
-    if (refundStatus) filter.refundStatus = refundStatus;
-    if (transactionId) filter.transactionId = transactionId;
-    if (orderId) filter.orderId = orderId;
+    if (status) {
+      filter.status = status;
+    }
+    if (paymentMode) {
+      filter.paymentMode = paymentMode;
+    }
+    if (refundStatus) {
+      filter.refundStatus = refundStatus;
+    }
+    if (transactionId) {
+      filter.transactionId = transactionId;
+    }
+    if (orderId) {
+      filter.orderId = orderId;
+    }
     if (startDate && endDate) {
       filter.createdAt = { $gte: new Date(startDate), $lte: new Date(endDate) };
     }

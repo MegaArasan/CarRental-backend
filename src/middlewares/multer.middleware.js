@@ -1,7 +1,6 @@
-const path = require('path');
+// const path = require('path');
 const multer = require('multer');
 // const { fileURLToPath } = require('url');
-const ErrorResponse = require('../errors/errorResponse');
 
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = path.dirname(__filename);

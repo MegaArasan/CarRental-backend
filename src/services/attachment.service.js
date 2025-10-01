@@ -31,18 +31,14 @@ const handleFileUpload = async (files, data, user) => {
 };
 
 const getFile = async (fileId) => {
-  try {
-    const attachment = await FileAttachment.findById(fileId);
+  const attachment = await FileAttachment.findById(fileId);
 
-    if (!attachment) {
-      throw new ErrorResponse(404, 'File not found');
-    }
-
-    const downloadStream = downloadFile(attachment.gridFsFileId);
-    return { attachment, downloadStream };
-  } catch (error) {
-    throw error;
+  if (!attachment) {
+    throw new ErrorResponse(404, 'File not found');
   }
+
+  const downloadStream = downloadFile(attachment.gridFsFileId);
+  return { attachment, downloadStream };
 };
 
 module.exports = {

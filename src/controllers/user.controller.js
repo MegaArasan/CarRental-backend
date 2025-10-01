@@ -5,7 +5,6 @@ const { createToken } = require('../utils/jwt');
 const bcrypt = require('bcryptjs');
 const { createCsrfToken, hashToken } = require('../utils/helper');
 const { authenticatedUser, updateUser, getUserDtl } = require('../services/user.service');
-const userModel = require('../../src/models/userModel');
 
 /**
  * Authenticates a user with email and password.

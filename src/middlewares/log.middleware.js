@@ -25,7 +25,7 @@ exports.auditLog = (req, res, next) => {
       return originalJson.call(this, body);
     };
     next();
-  } catch (e) {
+  } catch (error) {
     logger.error('>>>>> an error occurred logging audit trail >>>>>>>>');
     logger.error(error.message);
     next();

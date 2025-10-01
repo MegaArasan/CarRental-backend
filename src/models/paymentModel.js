@@ -35,8 +35,11 @@ function applyStatusTimestamps(update) {
     u.failedAt = new Date();
   }
 
-  if (update.$set) update.$set = u;
-  else update = u;
+  if (update.$set) {
+    update.$set = u;
+  } else {
+    update = u;
+  }
 
   return update;
 }

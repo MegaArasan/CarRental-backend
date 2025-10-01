@@ -1,5 +1,4 @@
 const Joi = require('joi');
-const { profile } = require('winston');
 
 const loginSchema = Joi.object({
   email: Joi.string().email({ minDomainSegments: 2 }).required(),

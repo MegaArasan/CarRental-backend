@@ -5,6 +5,7 @@ const FileAttachment = require('../models/attachmentModel');
 const path = require('path');
 const { uploadFile } = require('../services/filestorage.service');
 const User = require('../models/userModel');
+const { Readable } = require('stream');
 require('dotenv/config');
 
 const MONGO_URL = process.env.MONGO_URL;
@@ -226,7 +227,9 @@ async function loadCars() {
 
 async function fetchImageAsMulterFile(url) {
   const response = await fetch(url);
-  if (!response.ok) throw new Error(`Failed to fetch: ${url}`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch: ${url}`);
+  }
   const chunks = [];
   for await (const chunk of response.body) {
     chunks.push(chunk);

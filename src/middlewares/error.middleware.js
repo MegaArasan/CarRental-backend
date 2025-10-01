@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const logger = require('../config/logger');
 const ErrorResponse = require('../errors/errorResponse');
 
-const errorMiddleware = (err, req, res, next) => {
+const errorMiddleware = (err, req, res, _next) => {
   let statusCode = 500;
   let message = 'Internal Server Error';
 

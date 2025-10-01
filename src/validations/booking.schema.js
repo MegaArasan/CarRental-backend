@@ -22,7 +22,9 @@ const bookingSchema = Joi.object({
       .required()
       .custom((value, helpers) => {
         const date = new Date(value);
-        if (isNaN(date)) return helpers.error('any.invalid');
+        if (isNaN(date)) {
+          return helpers.error('any.invalid');
+        }
         return value;
       }, 'Date validation'),
 
@@ -30,7 +32,9 @@ const bookingSchema = Joi.object({
       .required()
       .custom((value, helpers) => {
         const date = new Date(value);
-        if (isNaN(date)) return helpers.error('any.invalid');
+        if (isNaN(date)) {
+          return helpers.error('any.invalid');
+        }
         return value;
       }, 'Date validation')
   }).required()

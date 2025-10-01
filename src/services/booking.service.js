@@ -4,12 +4,13 @@ const Car = require('../../src/models/carsModel');
 const Razorpay = require('razorpay');
 const shortid = require('shortid');
 const moment = require('moment');
+const { insertPaymentHistory } = require('./payment.service');
 const razorpay = new Razorpay({
   key_id: process.env.RAZOR_KEY,
   key_secret: process.env.RAZOR_SECRET
 });
 
-const addBookingService = async (data) => {
+const addBookingService = async (data, user) => {
   const options = {
     amount: data.totalAmount * 100,
     currency: 'INR',
@@ -50,7 +51,7 @@ const addBookingService = async (data) => {
     const existFrom = moment(slot.slot.from);
     const existTo = moment(slot.slot.to);
 
-    let alreadyBooked = newFrom.isBefore(existTo) && newTo.isAfter(existFrom);
+    const alreadyBooked = newFrom.isBefore(existTo) && newTo.isAfter(existFrom);
     if (alreadyBooked) {
       throw new ErrorResponse(400, 'Car is already booked in the selected time range');
     }
@@ -76,6 +77,9 @@ const addBookingService = async (data) => {
   });
   await newbooking.save();
 
+  // Adding the payment history
+  await insertPaymentHistory(response.id, user, data.totalAmount);
+
   return {
     id: response.id,
     currency: response.currency,
@@ -84,7 +88,7 @@ const addBookingService = async (data) => {
 };
 
 const getBookingService = async (user, filter = {}) => {
-  let query = {};
+  const query = {};
   if (user.role !== 'admin') {
     query.user = user.userId;
   }

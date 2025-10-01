@@ -1,7 +1,7 @@
 const redis = require('redis');
 const logger = require('../config/logger');
 
-let redisClient = redis.createClient({
+const redisClient = redis.createClient({
   socket: {
     connectTimeout: 10000,
     reconnectStrategy: (retries) => {
@@ -25,8 +25,12 @@ redisClient.on('error', (error) => logger.error(`Redis Error: ${error}`));
 })();
 
 const cachedMiddleware = async (req, res, next) => {
-  if (req.method !== 'GET') return next();
-  if (req.url.includes('/profile') || req.url.includes('/admin')) return next();
+  if (req.method !== 'GET') {
+    return next();
+  }
+  if (req.url.includes('/profile') || req.url.includes('/admin')) {
+    return next();
+  }
 
   const key = `cache:${req.url}`;
 
