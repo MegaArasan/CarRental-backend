@@ -18,6 +18,7 @@ const attachmentRouter = require('./src/routes/attachment.route');
 const csrfRouter = require('./src/routes/csrf.route');
 const imageViewRouter = require('./src/routes/image.route');
 const paymentRouter = require('./src/routes/payment.route');
+const offersRouter = require('./src/routes/offers.route');
 
 const cookieParser = require('cookie-parser');
 const logger = require('./src/config/logger');
@@ -56,6 +57,7 @@ app.use('/api/v1/csrf', csrfRouter);
 app.use('/api/v1/cars', carRouter);
 app.use('/api/v1/attachment', attachmentRouter);
 app.use('/api/v1/payment', paymentRouter);
+app.use('/api/v1/offers', offersRouter);
 
 app.use((req, res) => {
   res.status(404).json({ success: false, message: `Route ${req.originalUrl} Not Found` });
@@ -78,7 +80,7 @@ app.listen(PORT, () => console.log(`server started in ${PORT}`));
 // TODO :
 // 1. Edit Profile including profile picture  => Done
 // 2. payment History. (need payment table) => Need to test and changes done
-// 3. Top deals and Offers
-// 4. pickup and drop
+// 3. Top deals and Offers => done
+// 4. pickup and drop => done
 // 5. Explore API
 // 6. Admin Dashboard

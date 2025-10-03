@@ -17,25 +17,23 @@ const addBookingService = async (data, user) => {
     receipt: shortid.generate()
   };
 
-  // Check the car exist
+  // Check if car exists
   const car = await Car.findOne({ _id: data.car });
   if (!car) {
     throw new ErrorResponse(404, 'Car not found');
   }
 
-  const booking = await Booking.find({ car: data.car });
+  const bookings = await Booking.find({ car: data.car });
 
-  // validate the dates
-  const newbookingslot = data.bookedTimeSlots;
+  // Validate slot dates
   const FORMAT = 'MMM DD YYYY HH:mm';
-  const newFrom = moment(newbookingslot.from, FORMAT, true);
-  const newTo = moment(newbookingslot.to, FORMAT, true);
+  const newFrom = moment(data.bookedTimeSlots.from, FORMAT, true);
+  const newTo = moment(data.bookedTimeSlots.to, FORMAT, true);
 
   if (!newFrom.isValid() || !newTo.isValid()) {
     throw new ErrorResponse(400, `Invalid date/time format. Expected: ${FORMAT}`);
   }
 
-  // Need to validate the given date is not a past date
   const currDate = moment();
   if (newFrom.isBefore(currDate)) {
     throw new ErrorResponse(400, 'From date should be greater than current time');
@@ -44,40 +42,48 @@ const addBookingService = async (data, user) => {
     throw new ErrorResponse(400, 'To date should be greater than From date');
   }
 
-  // Check for booking time slots
-  const bookedslots = booking || [];
-
-  for (const slot of bookedslots) {
+  // Check for overlapping bookings
+  for (const slot of bookings) {
     const existFrom = moment(slot.slot.from);
     const existTo = moment(slot.slot.to);
 
-    const alreadyBooked = newFrom.isBefore(existTo) && newTo.isAfter(existFrom);
-    if (alreadyBooked) {
+    if (newFrom.isBefore(existTo) && newTo.isAfter(existFrom)) {
       throw new ErrorResponse(400, 'Car is already booked in the selected time range');
     }
   }
 
-  // create payment
+  // Create Razorpay payment order
   const response = await razorpay.orders.create(options);
 
   if (!response) {
     throw new ErrorResponse(500, 'Payment order creation failed');
   }
 
-  //Save the booking
-  const newbooking = new Booking({
-    ...data,
-    slot: {
-      from: newFrom.toDate(),
-      to: newTo.toDate()
-    },
+  // Save booking with pickup/drop and optional offer
+  const newBooking = new Booking({
+    car: data.car,
+    user: data.user._id,
+    slot: { from: newFrom.toDate(), to: newTo.toDate() },
+    totalHours: data.totalHours,
+    totalAmount: data.totalAmount,
+    finalAmount: data.finalAmount || data.totalAmount,
+    driverRequired: data.driverRequired,
+    offerApplied: data.offerApplied || null,
+
+    // Pickup & Drop
+    pickupLocation: data.pickupLocation,
+    dropLocation: data.dropLocation,
+    pickupDate: new Date(data.pickupDate),
+    dropDate: new Date(data.dropDate),
+
     razorpayOrderId: response.id,
     status: 'pending',
     expiresAt: moment().add(10, 'minutes').toDate()
   });
-  await newbooking.save();
 
-  // Adding the payment history
+  await newBooking.save();
+
+  // Add payment history
   await insertPaymentHistory(response.id, user, data.totalAmount);
 
   return {

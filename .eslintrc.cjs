@@ -17,6 +17,6 @@ module.exports = {
     'no-var': 'error',
     'prefer-const': 'warn',
     'comma-dangle': ['error', 'never'],
-    'prettier/prettier': 'error'
+    'prettier/prettier': ['error', { endOfLine: 'auto' }]
   }
 };

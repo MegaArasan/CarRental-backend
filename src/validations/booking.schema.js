@@ -15,7 +15,9 @@ const bookingSchema = Joi.object({
 
   totalHours: Joi.number().positive().required(),
   totalAmount: Joi.number().positive().required(),
+  finalAmount: Joi.number().positive().optional(), // amount after discount
   driverRequired: Joi.boolean().required(),
+  offerApplied: Joi.string().optional(),
 
   bookedTimeSlots: Joi.object({
     from: Joi.string()
@@ -37,7 +39,31 @@ const bookingSchema = Joi.object({
         }
         return value;
       }, 'Date validation')
-  }).required()
+  }).required(),
+
+  // NEW Pickup & Drop Fields
+  pickupLocation: Joi.string().when('driverRequired', { is: true, then: Joi.required() }),
+  dropLocation: Joi.string().when('driverRequired', { is: true, then: Joi.required() }),
+  pickupDate: Joi.string()
+    .required()
+    .custom((value, helpers) => {
+      const date = new Date(value);
+      if (isNaN(date)) {
+        return helpers.error('any.invalid');
+      }
+      return value;
+    }, 'Date validation')
+    .when('driverRequired', { is: true, then: Joi.required() }),
+  dropDate: Joi.string()
+    .required()
+    .custom((value, helpers) => {
+      const date = new Date(value);
+      if (isNaN(date)) {
+        return helpers.error('any.invalid');
+      }
+      return value;
+    }, 'Date validation')
+    .when('driverRequired', { is: true, then: Joi.required() })
 });
 
 const getBookingQuerySchema = Joi.object({

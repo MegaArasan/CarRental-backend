@@ -13,6 +13,36 @@ const bookingSchema = new mongoose.Schema(
     totalAmount: { type: Number },
     driverRequired: { type: Boolean, default: false },
 
+    // New fields for pickup & drop
+    pickupLocation: {
+      type: String,
+      required: function () {
+        return this.driverRequired;
+      }
+    },
+    dropLocation: {
+      type: String,
+      required: function () {
+        return this.driverRequired;
+      }
+    },
+    pickupDate: {
+      type: Date,
+      required: function () {
+        return this.driverRequired;
+      }
+    },
+    dropDate: {
+      type: Date,
+      required: function () {
+        return this.driverRequired;
+      }
+    },
+
+    // Offer/discount fields
+    offerApplied: { type: String, default: null },
+    finalAmount: { type: Number }, // amount after applying discount
+
     // New fields below
     status: {
       type: String,
