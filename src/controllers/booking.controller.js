@@ -1,7 +1,11 @@
 const Booking = require('../../src/models/bookingModel');
 const Car = require('../../src/models/carsModel');
 const logger = require('../config/logger');
-const { addBookingService, getBookingService } = require('../services/booking.service');
+const {
+  addBookingService,
+  getBookingService,
+  updateStatus
+} = require('../services/booking.service');
 const { updatePaymentHistory } = require('../services/payment.service');
 
 const addBooking = async (req, res, next) => {
@@ -94,8 +98,25 @@ const confirmBooking = async (req, res) => {
   }
 };
 
+const updateBookingStatus = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    await updateStatus(id, status);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Booking status updated successfully',
+      data: ''
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   addBooking,
   getBooking,
-  confirmBooking
+  confirmBooking,
+  updateBookingStatus
 };

@@ -141,4 +141,16 @@ const edit = async (id, data) => {
   return result;
 };
 
-module.exports = { addCar, getAll, getCount, edit, getOne };
+const deleteOne = async (id) => {
+  const car = await Car.findById(id);
+
+  if (!car) {
+    throw new ErrorResponse(404, 'Car not found');
+  }
+
+  await car.deleteOne();
+
+  return true;
+};
+
+module.exports = { addCar, getAll, getCount, edit, getOne, deleteOne };

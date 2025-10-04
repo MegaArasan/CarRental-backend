@@ -59,4 +59,20 @@ const editCarSchema = Joi.object({
   })
 }).min(1); // Require at least one field to update
 
-module.exports = { addCarSchema, getCarSchema, editCarSchema };
+const editCarParamsSchema = Joi.object({
+  id: Joi.string().required()
+});
+
+const deleteCarSchema = Joi.object({
+  id: Joi.string()
+    .regex(/^[0-9a-fA-F]{24}$/)
+    .required()
+});
+
+module.exports = {
+  addCarSchema,
+  getCarSchema,
+  editCarSchema,
+  deleteCarSchema,
+  editCarParamsSchema
+};

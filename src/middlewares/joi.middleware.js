@@ -1,6 +1,6 @@
 const validate = (schema) => {
   return (req, res, next) => {
-    const { error } = schema.validate(req.body);
+    const { error } = schema.validate(req.body, { stripUnknown: true });
     // const valid = error === null;
     if (!error) {
       return next();
@@ -27,7 +27,22 @@ const validateQuery = (schema) => {
   };
 };
 
+const validateParams = (schema) => {
+  return (req, res, next) => {
+    const { error } = schema.validate(req.params, { abortEarly: false, stripUnknown: true });
+    if (!error) {
+      return next();
+    }
+    const message = error.details.map((i) => i.message).join(', ');
+    // Optional: store in res.locals if needed
+    res.locals.message = message;
+
+    return res.status(422).json({ msg: message });
+  };
+};
+
 module.exports = {
   validate,
-  validateQuery
+  validateQuery,
+  validateParams
 };

@@ -120,7 +120,19 @@ const getBookingService = async (user, filter = {}) => {
   return bookings;
 };
 
+const updateStatus = async (id, status) => {
+  const booking = await Booking.findById(id);
+  if (!booking) {
+    throw new ErrorResponse(404, 'Booking not found');
+  }
+
+  booking.status = status;
+  await booking.save();
+  return true;
+};
+
 module.exports = {
   addBookingService,
-  getBookingService
+  getBookingService,
+  updateStatus
 };

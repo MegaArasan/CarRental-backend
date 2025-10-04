@@ -4,7 +4,12 @@ const sendEmail = require('../utils/sendEmail');
 const { createToken } = require('../utils/jwt');
 const bcrypt = require('bcryptjs');
 const { createCsrfToken, hashToken } = require('../utils/helper');
-const { authenticatedUser, updateUser, getUserDtl } = require('../services/user.service');
+const {
+  authenticatedUser,
+  updateUser,
+  getUserDtl,
+  getAllUsers
+} = require('../services/user.service');
 
 /**
  * Authenticates a user with email and password.
@@ -230,6 +235,27 @@ const editUser = async (req, res, next) => {
   }
 };
 
+const getAll = async (req, res, next) => {
+  try {
+    // Optional query params: page, limit, sort, role, isActive
+    const { page, limit, sort, role, isActive } = req.query;
+
+    const filters = {};
+    if (role) {
+      filters.role = role;
+    }
+    if (isActive !== undefined) {
+      filters.isActive = isActive === 'true';
+    }
+
+    const result = await getAllUsers({ page, limit, sort, filters });
+
+    res.status(200).json({ success: true, ...result });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   login,
   register,
@@ -237,5 +263,6 @@ module.exports = {
   resetPassword,
   logout,
   getUser,
-  editUser
+  editUser,
+  getAll
 };

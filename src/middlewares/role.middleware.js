@@ -1,7 +1,7 @@
 const ErrorResponse = require('../errors/errorResponse');
 
 const authorizedRoles = (...allowedRoles) => {
-  return (req, res, next) => {
+  return (req, _res, next) => {
     const user = req.user;
     if (!user) {
       throw new ErrorResponse(401, 'Unauthorized: User Not found');

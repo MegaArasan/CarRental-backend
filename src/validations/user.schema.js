@@ -31,8 +31,17 @@ const editProfileSchema = Joi.object({
   .min(1) // At least one field must be present
   .unknown(false); // Disallow unknown fields
 
+const getAllUsersSchema = Joi.object({
+  page: Joi.number().integer().min(1).default(1),
+  limit: Joi.number().integer().min(1).max(100).default(20),
+  sort: Joi.string().default('-createdAt'),
+  role: Joi.string().valid('admin', 'customer', 'staff').optional(),
+  isActive: Joi.boolean().optional()
+});
+
 module.exports = {
   loginSchema,
   registerSchema,
-  editProfileSchema
+  editProfileSchema,
+  getAllUsersSchema
 };

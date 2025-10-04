@@ -19,6 +19,7 @@ const csrfRouter = require('./src/routes/csrf.route');
 const imageViewRouter = require('./src/routes/image.route');
 const paymentRouter = require('./src/routes/payment.route');
 const offersRouter = require('./src/routes/offers.route');
+const exploreRouter = require('./src/routes/explore.route');
 
 const cookieParser = require('cookie-parser');
 const logger = require('./src/config/logger');
@@ -52,6 +53,7 @@ app.get('/', (_, res) => {
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/image', imageViewRouter);
 app.use('/api/v1/bookings', bookingRouter);
+app.use('/api/v1/explore', exploreRouter);
 app.use(authMiddleware);
 app.use('/api/v1/csrf', csrfRouter);
 app.use('/api/v1/cars', carRouter);
@@ -82,5 +84,5 @@ app.listen(PORT, () => console.log(`server started in ${PORT}`));
 // 2. payment History. (need payment table) => Need to test and changes done
 // 3. Top deals and Offers => done
 // 4. pickup and drop => done
-// 5. Explore API
-// 6. Admin Dashboard
+// 5. Explore API => Done
+// 6. Admin Dashboard => only reports are pending

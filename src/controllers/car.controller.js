@@ -1,4 +1,4 @@
-const { addCar, getAll, getCount, edit, getOne } = require('../services/car.service');
+const { addCar, getAll, getCount, edit, getOne, deleteOne } = require('../services/car.service');
 
 const getCars = async (req, res, next) => {
   try {
@@ -72,8 +72,20 @@ const editCar = async (req, res, next) => {
   }
 };
 
+const deleteCar = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    await deleteOne(id);
+
+    return res.status(200).json({ success: true, message: 'Car deleted successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getCars,
   add,
-  editCar
+  editCar,
+  deleteCar
 };

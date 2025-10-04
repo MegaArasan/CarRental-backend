@@ -68,4 +68,32 @@ const getUserDtl = async (id) => {
   return userObj;
 };
 
-module.exports = { authenticatedUser, updateUser, getUserDtl };
+/**
+ * Fetch all users with pagination, sorting, and optional filters
+ * @param {Object} options - { page, limit, sort, filters }
+ * @returns {Object} - { users, total, page, pages }
+ */
+const getAllUsers = async ({ page = 1, limit = 20, sort = '-createdAt', filters = {} }) => {
+  page = parseInt(page);
+  limit = parseInt(limit);
+
+  const query = { ...filters };
+
+  // Count total matching users
+  const total = await User.countDocuments(query);
+
+  // Calculate total pages
+  const pages = Math.ceil(total / limit);
+
+  // Fetch users
+  const users = await User.find(query)
+    .select('-password') // exclude password
+    .sort(sort)
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .lean(); // lean for performance
+
+  return { users, total, page, pages };
+};
+
+module.exports = { authenticatedUser, updateUser, getUserDtl, getAllUsers };

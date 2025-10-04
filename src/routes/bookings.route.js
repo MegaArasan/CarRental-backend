@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { addBooking, getBooking, confirmBooking } = require('../controllers/booking.controller');
+const {
+  addBooking,
+  getBooking,
+  confirmBooking,
+  updateBookingStatus
+} = require('../controllers/booking.controller');
 const auth = require('../middlewares/auth.middleware');
 const csrf = require('../middlewares/verifyCsrf');
 const verifySignature = require('../middlewares/verifySignature');
@@ -12,5 +17,7 @@ router.post('/bookcar', auth, csrf, validate(bookingSchema), addBooking);
 router.get('/getallbookings', auth, csrf, validateQuery(getBookingQuerySchema), getBooking);
 
 router.post('/verify', verifySignature, confirmBooking);
+
+router.patch('/:id/status', auth, csrf, updateBookingStatus);
 
 module.exports = router;
