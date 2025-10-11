@@ -9,3 +9,4 @@ node_modules
 
 .prettierrc.json
 .prettierignore
+/tmp
