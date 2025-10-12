@@ -153,4 +153,46 @@ const deleteOne = async (id) => {
   return true;
 };
 
-module.exports = { addCar, getAll, getCount, edit, getOne, deleteOne };
+/**
+ * Fetch top cars per segment
+ * @param {Object} filter optional filter like city, location, fuel type
+ * @param {String} sortBy 'popularity' | 'price'
+ */
+async function getTopCarsPerSegment(filter = {}, sortBy = 'popularity') {
+  const sortField = sortBy === 'price' ? 'rentPerHour' : 'bookingsCount'; // popularity uses bookingsCount
+
+  // Aggregate by segment
+  const topCars = await Car.aggregate([
+    { $match: { status: 'active', ...filter } }, // only active cars + optional filters
+    {
+      $sort: { [sortField]: -1 } // descending for popularity, ascending for price
+    },
+    {
+      $group: {
+        _id: '$segment', // group by segment/body type
+        car: { $first: '$$ROOT' } // take the first car after sorting
+      }
+    },
+    { $replaceRoot: { newRoot: '$car' } } // return the car object directly
+  ]);
+
+  const baseUrl = process.env.BASE_URL;
+
+  const transformed = topCars.map((car) => {
+    const thumbId = car.thumbnail;
+    let image = '';
+    if (thumbId) {
+      image = `${baseUrl}/api/v1/image/${car.thumbnail}`;
+    } else {
+      image = car.image;
+    }
+    return {
+      ...car,
+      image
+    };
+  });
+
+  return transformed;
+}
+
+module.exports = { addCar, getAll, getCount, edit, getOne, deleteOne, getTopCarsPerSegment };

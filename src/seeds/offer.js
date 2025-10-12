@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Offer = require('../models/offerModel.js');
 require('dotenv/config.js');
+
 const MONGO_URL = process.env.MONGO_URL;
 
 const seedOffers = async () => {
@@ -10,50 +11,54 @@ const seedOffers = async () => {
 
     // Clear old data
     await Offer.deleteMany({});
+    // Create sample offers
+    const now = new Date();
 
-    // Insert sample offers
     const offers = [
       {
         title: 'Weekend Special',
-        description: 'Book SUVs on weekends and get 20% off',
+        description: 'Book SUVs on weekends and get 20% off!',
         discountType: 'percentage',
         discountValue: 20,
-        carId: null,
+        carIds: [], // Empty → applies to all SUV cars via filter in service logic
+        isGlobal: false,
         minDays: 2,
         promoCode: null,
-        startDate: new Date(),
-        endDate: new Date(new Date().setDate(new Date().getDate() + 30)), // valid for 30 days
+        startDate: now,
+        endDate: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000), // +30 days
         isActive: true
       },
       {
-        title: 'Flat ₹500 OFF',
-        description: 'Save ₹500 on any sedan booking',
+        title: 'Flat ₹500 OFF on Sedans',
+        description: 'Get ₹500 off on all sedan bookings.',
         discountType: 'flat',
         discountValue: 500,
-        carId: null,
+        carIds: [], // Later you can assign specific sedan car ObjectIds
+        isGlobal: false,
         minDays: 1,
         promoCode: null,
-        startDate: new Date(),
-        endDate: new Date(new Date().setDate(new Date().getDate() + 15)),
+        startDate: now,
+        endDate: new Date(now.getTime() + 15 * 24 * 60 * 60 * 1000),
         isActive: true
       },
       {
-        title: 'Promo Code WELCOME10',
-        description: 'Get 10% off on your first booking with code WELCOME10',
+        title: 'Global Launch Offer — WELCOME10',
+        description: 'Get 10% off on your first booking with code WELCOME10.',
         discountType: 'percentage',
         discountValue: 10,
-        carId: null,
+        carIds: [], // Empty because global
+        isGlobal: true,
         minDays: 0,
         promoCode: 'WELCOME10',
-        startDate: new Date(),
-        endDate: new Date(new Date().setDate(new Date().getDate() + 60)),
+        startDate: now,
+        endDate: new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000),
         isActive: true
       }
     ];
 
     await Offer.insertMany(offers);
     console.log('✅ Offers seeded successfully!');
-    process.exit();
+    process.exit(0);
   } catch (err) {
     console.error('❌ Error seeding offers:', err);
     process.exit(1);

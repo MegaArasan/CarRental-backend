@@ -1,6 +1,6 @@
 const Offer = require('../models/offerModel');
 const Booking = require('../models/bookingModel');
-const { getCount, getAll } = require('./car.service');
+const { getCount, getTopCarsPerSegment } = require('./car.service');
 
 const getExploreData = async (filters) => {
   const now = new Date();
@@ -35,7 +35,8 @@ const getExploreData = async (filters) => {
   }
 
   // Get cars with pagination (delegated to car service)
-  const featuredCars = await getAll(query, page, limit);
+  // const featuredCars = await getAll(query, page, limit);
+  const featuredCars = await getTopCarsPerSegment({}, 'popularity');
 
   // Fetch active offers with car details
   const topDeals = await Offer.find({
@@ -43,7 +44,7 @@ const getExploreData = async (filters) => {
     startDate: { $lte: now },
     endDate: { $gte: now }
   })
-    .populate('carId', 'manufacturer model variant rentPerHour')
+    // .populate('carId', 'manufacturer model variant rentPerHour')
     .lean();
 
   // Popular cars based on booking count
