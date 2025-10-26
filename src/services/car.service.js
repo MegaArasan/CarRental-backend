@@ -195,4 +195,31 @@ async function getTopCarsPerSegment(filter = {}, sortBy = 'popularity') {
   return transformed;
 }
 
-module.exports = { addCar, getAll, getCount, edit, getOne, deleteOne, getTopCarsPerSegment };
+const getAllMakeDB = async () => {
+  // Get unique manufacturers
+  const manufacturers = await Car.distinct('manufacturer');
+
+  // Prepare models grouped by manufacturer
+  const modelsByManufacturer = {};
+
+  for (const manu of manufacturers) {
+    const models = await Car.distinct('model', { manufacturer: manu });
+    modelsByManufacturer[manu] = models;
+  }
+
+  return {
+    manufacturers,
+    models: modelsByManufacturer
+  };
+};
+
+module.exports = {
+  addCar,
+  getAll,
+  getCount,
+  edit,
+  getOne,
+  deleteOne,
+  getTopCarsPerSegment,
+  getAllMakeDB
+};

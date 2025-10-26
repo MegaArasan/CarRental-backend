@@ -1,4 +1,12 @@
-const { addCar, getAll, getCount, edit, getOne, deleteOne } = require('../services/car.service');
+const {
+  addCar,
+  getAll,
+  getCount,
+  edit,
+  getOne,
+  deleteOne,
+  getAllMakeDB
+} = require('../services/car.service');
 
 const getCars = async (req, res, next) => {
   try {
@@ -83,9 +91,19 @@ const deleteCar = async (req, res, next) => {
   }
 };
 
+const getAllMakeAndModel = async (req, res, next) => {
+  try {
+    const manufacturers = await getAllMakeDB();
+    res.status(200).json({ success: true, data: manufacturers });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getCars,
   add,
   editCar,
-  deleteCar
+  deleteCar,
+  getAllMakeAndModel
 };
