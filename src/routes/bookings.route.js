@@ -6,18 +6,18 @@ const {
   confirmBooking,
   updateBookingStatus
 } = require('../controllers/booking.controller');
-const auth = require('../middlewares/auth.middleware');
+// const auth = require('../middlewares/auth.middleware');
 const csrf = require('../middlewares/verifyCsrf');
 const verifySignature = require('../middlewares/verifySignature');
 const { validate, validateQuery } = require('../middlewares/joi.middleware');
 const { bookingSchema, getBookingQuerySchema } = require('../validations/booking.schema');
 
-router.post('/bookcar', auth, csrf, validate(bookingSchema), addBooking);
+router.post('/bookcar', csrf, validate(bookingSchema), addBooking);
 
-router.get('/getallbookings', auth, csrf, validateQuery(getBookingQuerySchema), getBooking);
+router.get('/getallbookings', csrf, validateQuery(getBookingQuerySchema), getBooking);
 
 router.post('/verify', verifySignature, confirmBooking);
 
-router.patch('/:id/status', auth, csrf, updateBookingStatus);
+router.patch('/:id/status', csrf, updateBookingStatus);
 
 module.exports = router;
