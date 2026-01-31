@@ -4,15 +4,7 @@ const Joi = require('joi');
 const isoOrDateRegex = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z)?$/;
 
 const bookingSchema = Joi.object({
-  user: Joi.object({
-    _id: Joi.string().required(),
-    username: Joi.string().required(),
-    email: Joi.string().email().required(),
-    phoneno: Joi.number().integer().required()
-  }).required(),
-
   car: Joi.string().required(),
-
   totalHours: Joi.number().positive().required(),
   totalAmount: Joi.number().positive().required(),
   finalAmount: Joi.number().positive().optional(), // amount after discount

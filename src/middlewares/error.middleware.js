@@ -5,7 +5,7 @@ const ErrorResponse = require('../errors/errorResponse');
 const errorMiddleware = (err, req, res, _next) => {
   let statusCode = 500;
   let message = 'Internal Server Error';
-
+  console.log(err);
   if (err instanceof ErrorResponse) {
     statusCode = err.code;
     message = err.message;
@@ -30,6 +30,9 @@ const errorMiddleware = (err, req, res, _next) => {
   } else if (err.name === 'MongoServerSelectionError') {
     statusCode = 503;
     message = 'Unable to connect to MongoDB server. Please try again later.';
+  } else if (err.statusCode) {
+    statusCode = err.statusCode || 500;
+    message = err?.error?.description || message;
   } else if (err.message) {
     message = err.message;
   }

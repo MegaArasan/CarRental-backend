@@ -16,6 +16,8 @@ const addBooking = async (req, res, next) => {
       data: result
     });
   } catch (error) {
+    console.log(error);
+    logger.error(error?.stack || error?.message);
     next(error);
   }
 };

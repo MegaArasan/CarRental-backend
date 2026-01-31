@@ -34,9 +34,9 @@ const login = async (req, res, next) => {
     });
 
     res.cookie('csrf_token', hashedCsrfToken, {
-      httpOnly: false, // Frontend needs access
-      secure: true,
-      sameSite: 'strict',
+      httpOnly: true, // Frontend needs access
+      secure: false,
+      sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
 

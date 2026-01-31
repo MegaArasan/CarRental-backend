@@ -3,10 +3,21 @@ module.exports = {
     {
       name: 'Car-rental',
       script: './index.js',
+
+      // Process mode
       instances: 1,
       exec_mode: 'fork',
-      watch: true,
-      ignore_watch: ['node_modules', './src/logs'],
+
+      // 🔥 WATCH SETTINGS
+      watch: ['index.js', 'src'],
+      ignore_watch: ['node_modules', 'src/logs', '.git', '.env'],
+
+      watch_delay: 1000,
+      watch_options: {
+        followSymlinks: false
+      },
+
+      // ENV
       env: {
         NODE_ENV: 'development',
         PORT: 8000
@@ -15,54 +26,15 @@ module.exports = {
         NODE_ENV: 'production',
         PORT: 8000
       },
+
+      // LOGS
       error_file: './src/logs/pm2-error.log',
       out_file: './src/logs/pm2-out.log',
       merge_logs: true,
-      max_memory_restart: '512M'
+
+      // SAFETY
+      max_memory_restart: '512M',
+      autorestart: true
     }
   ]
 };
-// module.exports = {
-//   apps: [
-//     {
-//       name: 'Car-rental-8000',
-//       script: './index.js',
-//       env: {
-//         PORT: 8000
-//       },
-//       instances: 4,
-//       exec_mode: 'cluster',
-//       watch: true
-//     },
-//     {
-//       name: 'Car-rental-8001',
-//       script: './index.js',
-//       env: {
-//         PORT: 8001
-//       },
-//       instances: 4,
-//       exec_mode: 'cluster',
-//       watch: true
-//     },
-//     {
-//       name: 'Car-rental-8002',
-//       script: './index.js',
-//       env: {
-//         PORT: 8002
-//       },
-//       instances: 4,
-//       exec_mode: 'cluster',
-//       watch: true
-//     },
-//     {
-//       name: 'Car-rental-8003',
-//       script: './index.js',
-//       env: {
-//         PORT: 8003
-//       },
-//       instances: 4,
-//       exec_mode: 'cluster',
-//       watch: true
-//     }
-//   ]
-// };

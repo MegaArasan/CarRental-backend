@@ -62,7 +62,7 @@ const addBookingService = async (data, user) => {
   // Save booking with pickup/drop and optional offer
   const newBooking = new Booking({
     car: data.car,
-    user: data.user._id,
+    user: user.userId,
     slot: { from: newFrom.toDate(), to: newTo.toDate() },
     totalHours: data.totalHours,
     totalAmount: data.totalAmount,
@@ -116,8 +116,21 @@ const getBookingService = async (user, filter = {}) => {
     Object.assign(query, slotFilter);
   }
   console.log(query);
-  const bookings = await Booking.find(query).populate('car');
-  return bookings;
+  const bookings = await Booking.find(query).populate('car').lean();
+
+  const baseUrl = process.env.BASE_URL;
+
+  return bookings.map((booking) => {
+    const thumbId = booking?.car?.thumbnail;
+
+    return {
+      ...booking,
+      car: {
+        ...booking.car,
+        image: thumbId ? `${baseUrl}/api/v1/image/${thumbId}` : booking?.car?.image
+      }
+    };
+  });
 };
 
 const updateStatus = async (id, status) => {
