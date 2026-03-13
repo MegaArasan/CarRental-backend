@@ -1,3 +1,4 @@
+<<<<<<< dev
 # 🚗 Car Rental Backend API
 
 A full-featured Node.js backend for a car rental platform. Supports image uploads via GridFS, secure cookie-based sessions (JWT + CSRF), dynamic filtering, role-based access, and optimized MongoDB queries.
@@ -139,3 +140,6 @@ BASE_URL=http://localhost:8000
 - 🚧 Multi-user login (vendor vs customer)
 
 ---
+=======
+# Application revemping in progress
+>>>>>>> master
