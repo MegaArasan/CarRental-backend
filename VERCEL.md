@@ -31,6 +31,9 @@
 - `RAZOR_SECRET`
 - `REDIS_URL` (optional)
 
+`CORS_ORIGINS` should include the production frontend origin, for example:
+`https://kingcars-rental.netlify.app`
+
 ## Deploy
 
 1. Import the repository into Vercel.
