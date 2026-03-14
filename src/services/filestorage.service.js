@@ -5,8 +5,8 @@
 
 const { getBucket } = require('../config/db');
 const { ObjectId } = require('mongodb');
+const { randomUUID } = require('crypto');
 const sharp = require('sharp');
-const { v4: uuidv4 } = require('uuid');
 const ErrorResponse = require('../errors/errorResponse');
 
 // Allowed MIME types (add/remove as needed)
@@ -34,7 +34,7 @@ const uploadFile = async (file, providedBucket) => {
     }
 
     const bucket = providedBucket || getBucket();
-    const uniqueName = `${uuidv4()}-${file.originalname}`;
+    const uniqueName = `${randomUUID()}-${file.originalname}`;
 
     // Create thumbnail buffer
     const thumbBuffer = await sharp(file.buffer)
