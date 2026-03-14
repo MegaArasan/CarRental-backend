@@ -1,6 +1,7 @@
 const { downloadFile } = require('../services/filestorage.service');
 const FileAttachment = require('../models/attachmentModel');
 const ErrorResponse = require('../errors/errorResponse');
+const logger = require('../config/logger');
 
 const getImageView = async (req, res, next) => {
   try {
@@ -20,6 +21,7 @@ const getImageView = async (req, res, next) => {
     try {
       downloadStream = await downloadFile(id);
     } catch (err) {
+      logger.error(err);
       throw new ErrorResponse(404, 'File stream not available');
     }
 

@@ -28,7 +28,7 @@ const authenticatedUser = async (email, password) => {
   const csrfToken = createCsrfToken();
   const hashedCsrfToken = hashToken(csrfToken);
 
-  return { token, hashedCsrfToken };
+  return { token, csrfToken, hashedCsrfToken };
 };
 
 const updateUser = async (id, data) => {

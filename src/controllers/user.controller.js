@@ -5,6 +5,11 @@ const { createToken } = require('../utils/jwt');
 const bcrypt = require('bcryptjs');
 const { createCsrfToken, hashToken } = require('../utils/helper');
 const {
+  getAuthCookieOptions,
+  getCsrfCookieOptions,
+  getClearCookieOptions
+} = require('../utils/cookies');
+const {
   authenticatedUser,
   updateUser,
   getUserDtl,
@@ -24,23 +29,17 @@ const {
 const login = async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    const { token, hashedCsrfToken } = await authenticatedUser(email, password);
+    const { token, csrfToken, hashedCsrfToken } = await authenticatedUser(email, password);
 
-    res.cookie('token', token, {
-      httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      secure: true,
-      sameSite: 'strict'
+    res.cookie('token', token, getAuthCookieOptions());
+
+    res.cookie('csrf_token', hashedCsrfToken, getCsrfCookieOptions());
+
+    res.status(200).json({
+      success: true,
+      message: 'Login successfully',
+      csrfToken
     });
-
-    res.cookie('csrf_token', hashedCsrfToken, {
-      httpOnly: true, // Frontend needs access
-      secure: false,
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
-
-    res.status(200).json({ success: true, message: 'Login successfully' });
   } catch (e) {
     next(e);
   }
@@ -80,23 +79,17 @@ const register = async (req, res, next) => {
       phoneno,
       role: 'customer'
     });
-    res.cookie('token', token, {
-      httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      secure: true,
-      sameSite: 'strict'
-    });
+    res.cookie('token', token, getAuthCookieOptions());
 
     const csrfToken = createCsrfToken();
     const hashedCsrfToken = hashToken(csrfToken);
-    res.cookie('csrf_token', hashedCsrfToken, {
-      httpOnly: false, // Frontend needs access
-      secure: true,
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
+    res.cookie('csrf_token', hashedCsrfToken, getCsrfCookieOptions());
 
-    res.status(201).json({ success: true, message: 'User registered successfully' });
+    res.status(201).json({
+      success: true,
+      message: 'User registered successfully',
+      csrfToken
+    });
   } catch (error) {
     next(error);
   }
@@ -179,17 +172,9 @@ const resetPassword = async (req, res, next) => {
 
 const logout = async (req, res, next) => {
   try {
-    res.clearCookie('token', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict'
-    });
+    res.clearCookie('token', getClearCookieOptions({ httpOnly: true }));
 
-    res.clearCookie('csrf_token', {
-      httpOnly: false,
-      secure: true,
-      sameSite: 'strict'
-    });
+    res.clearCookie('csrf_token', getClearCookieOptions({ httpOnly: false }));
 
     return res.status(200).json({ success: true, message: 'Logout successful' });
   } catch (err) {

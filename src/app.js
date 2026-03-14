@@ -19,6 +19,9 @@ const exploreRouter = require('./routes/explore.route');
 const reportsRouter = require('./routes/reports.routes');
 
 const app = express();
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
 const defaultCorsOrigins = [
   'http://localhost:3000',
   'http://127.0.0.1:3000',

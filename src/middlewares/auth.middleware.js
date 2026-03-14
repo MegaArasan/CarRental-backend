@@ -1,4 +1,5 @@
 const { verifyToken } = require('../utils/jwt');
+const logger = require('../config/logger');
 
 /**
  * Middleware to authenticate requests using a JWT token stored in cookies.
@@ -24,6 +25,7 @@ const auth = async (req, res, next) => {
     req.user = decoded;
     next();
   } catch (e) {
+    logger.error(e);
     return res.status(401).json({ success: false, message: 'Invalid or expired token' });
   }
 };
