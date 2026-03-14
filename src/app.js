@@ -19,6 +19,31 @@ const exploreRouter = require('./routes/explore.route');
 const reportsRouter = require('./routes/reports.routes');
 
 const app = express();
+const defaultCorsOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'https://kingcars-rental.netlify.app'
+];
+const allowedOrigins = Array.from(
+  new Set([
+    ...defaultCorsOrigins,
+    ...(process.env.CORS_ORIGINS || '')
+      .split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean)
+  ])
+);
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`Origin ${origin} not allowed by CORS`));
+  },
+  methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'],
+  credentials: true
+};
 
 app.use(
   helmet({
@@ -27,15 +52,8 @@ app.use(
 );
 app.use(cookieParser());
 app.use(express.json());
-app.use(
-  cors({
-    origin: (process.env.CORS_ORIGINS || 'http://localhost:3000')
-      .split(',')
-      .map((origin) => origin.trim()),
-    methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'],
-    credentials: true
-  })
-);
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(limitter);
 app.use(auditLog);
 
@@ -47,8 +65,9 @@ app.use('/api/v1/user', userRouter);
 app.use('/api/v1/image', imageViewRouter);
 app.use('/api/v1/bookings', bookingRouter);
 app.use('/api/v1/explore', exploreRouter);
-app.use(authMiddleware);
 app.use('/api/v1/csrf', csrfRouter);
+app.use('/csrf', csrfRouter);
+app.use(authMiddleware);
 app.use('/api/v1/cars', carRouter);
 app.use('/api/v1/attachment', attachmentRouter);
 app.use('/api/v1/payment', paymentRouter);
