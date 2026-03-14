@@ -1,6 +1,6 @@
 const { generateReportData } = require('../services/reports.service');
 const { generateExcel } = require('../utils/excelGenerator');
-const { generatePDF } = require('../utils/pdfgenerator');
+const { generatePDF } = require('../utils/pdfGenerator');
 
 exports.getReportsSummary = async (req, res, next) => {
   try {
