@@ -1,5 +1,5 @@
 const ExcelJS = require('exceljs');
-const path = require('path');
+const { getReportFilePath } = require('./reportTemp');
 
 exports.generateExcel = async (type, data) => {
   const workbook = new ExcelJS.Workbook();
@@ -14,7 +14,7 @@ exports.generateExcel = async (type, data) => {
 
   data.forEach((item) => worksheet.addRow(item));
 
-  const filePath = path.join(__dirname, `../../tmp/${type}_report.xlsx`);
+  const filePath = getReportFilePath(`${type}_report.xlsx`);
   await workbook.xlsx.writeFile(filePath);
 
   return filePath;
