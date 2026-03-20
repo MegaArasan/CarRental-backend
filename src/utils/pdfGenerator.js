@@ -1,9 +1,9 @@
-const path = require('path');
 const fs = require('fs');
 const PDFDocument = require('pdfkit');
+const { getReportFilePath } = require('./reportTemp');
 
 exports.generatePDF = async (type, data) => {
-  const filePath = path.join(__dirname, `../../tmp/${type}_report.pdf`);
+  const filePath = getReportFilePath(`${type}_report.pdf`);
   const doc = new PDFDocument({ margin: 30 });
   const stream = fs.createWriteStream(filePath);
   doc.pipe(stream);
